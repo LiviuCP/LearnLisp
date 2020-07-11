@@ -1,4 +1,6 @@
- ; calculates the greatest common divisor by remainder method
+(defconstant firstRelevantPrime 2)
+
+; calculates the greatest common divisor by remainder method
 (defun gCommonDiv (first second)
   (check-type first integer)
   (check-type second integer)
@@ -11,3 +13,25 @@
    (cond ((= remainder 0)(setq result divider)(return))
 	 (t (setq divided divider) (setq divider remainder))))
   (return-from gCommonDiv result))
+
+(defun getPrimeNumbers(right &optional left) ; the search interval has only one mandatory defined margin, namely the right one (left is optional, if not defined than it is presumed 2 - first relevant prime nr)
+  (check-type right integer)
+  (assert (> right 1) (right) "The given threshold is invalid")
+  (when (not (null left))
+    (check-type left integer)
+    (assert (and (> left 1) (> right left)) (left right) "The given interval is invalid"))
+  (setq primesList '(3))                     ; seed the list of prime numbers (exclude 2 to avoid unnecessary checks and put it back later)
+  (do ((currentNrToCheck 5 (+ currentNrToCheck 2))) ; check only odd numbers as all even numbers except 2 are not prime
+      ((> currentNrToCheck right))
+      (dolist (currentPrimeNr primesList)
+	(setq quotient (floor currentNrToCheck currentPrimeNr))
+	(setq remainder (rem currentNrToCheck currentPrimeNr))
+	(when (= 0 remainder)
+	  (return))
+	(when (< quotient currentPrimeNr)
+	  (setq primesList (append primesList (list currentNrToCheck)))
+	  (return))))
+  (setq primesList (delete-if #'(lambda(x) (> x right)) (cons firstRelevantPrime primesList)))
+  (when (not (null left))
+    (setq primesList (delete-if #'(lambda(x) (< x left)) primesList)))      ; ensure 3 gets excluded if user enters 2 as right margin
+  (return-from getPrimeNumbers primesList))  ; return only the prime numbers from the requested interval (including the margins)
