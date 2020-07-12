@@ -20,7 +20,7 @@
   (setq second nil)
   (when (not (null first))
     (setq second (requestInput "Enter the second number: ")))
-  (if (and (not (null first)) (not (null second)))
+  (if (not (null second))
       (progn
 	(setq gcd (gCommonDiv first second))
 	(format t "The greatest common divisor of ~d and ~d is: ~d~%" first second gcd)
