@@ -23,9 +23,12 @@
   (cond ((null right) (write-line "You quit"))
 	(t (cond ((> left right) (setq temp left) (setq left right) (setq right temp)))
 	   (terpri)
-	   (princ "The search interval for prime numbers is: ")
+	   (princ "Retrieving prime numbers from interval: ")
 	   (cond ((< left right) (format t "[~d; ~d]~%~%" left right) (setq primesList (getPrimeNumbers right left)))
 		 (t (format t "[~d; ~d]~%~%" firstRelevantPrime right) (setq primesList (getPrimeNumbers left)))) ; //equal margins, only one threshold, display prime numbers starting with 2
+	   (princ "Done!")
+	   (terpri)
+	   (terpri)
 	   (if (= (length primesList) 0)
 	       (write-line "There are no prime numbers within this interval!")
 	     (format t "Found following prime numbers: ~%~%~a~%~%~d numbers found~%" primesList (length primesList)))
