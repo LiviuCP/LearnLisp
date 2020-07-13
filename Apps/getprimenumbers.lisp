@@ -15,7 +15,8 @@
   (return-from requestInput result))
 
 (defun main()
-  (setq primesList (list))
+  (defconstant outputFile "/tmp/primes.txt")
+  (setq primes (list))
   (setq left (requestInput "Enter the left interval margin: "))
   (setq right nil)
   (when (not (null left))
@@ -24,14 +25,19 @@
 	(t (cond ((> left right) (setq temp left) (setq left right) (setq right temp)))
 	   (terpri)
 	   (princ "Retrieving prime numbers from interval: ")
-	   (cond ((< left right) (format t "[~d; ~d]~%~%" left right) (setq primesList (getPrimeNumbers right left)))
-		 (t (format t "[~d; ~d]~%~%" firstRelevantPrime right) (setq primesList (getPrimeNumbers left)))) ; //equal margins, only one threshold, display prime numbers starting with 2
+	   (cond ((< left right) (format t "[~d; ~d]~%~%" left right) (setq primes (getPrimeNumbers right left)))
+		 (t (format t "[~d; ~d]~%~%" firstRelevantPrime right) (setq primes (getPrimeNumbers left)))) ; //equal margins, only one threshold, display prime numbers starting with 2
 	   (princ "Done!")
 	   (terpri)
 	   (terpri)
-	   (if (= (length primesList) 0)
+	   (if (= (length primes) 0)
 	       (write-line "There are no prime numbers within this interval!")
-	     (format t "Found following prime numbers: ~%~%~a~%~%~d numbers found~%" primesList (length primesList)))
-	   )))
+	     (progn
+	       (with-open-file (stream outputFile :direction :output)
+			       (format stream "Found following prime numbers in interval [~d; ~d]: ~%~%" left right)
+			       (dotimes (index (length primes))
+				 (format stream "Position: ~d~t~t~t~tValue: ~d~%" (+ index 1) (aref primes index)))
+			       (format t "~d numbers found~%~%" (length primes))
+			       (format t "Please check output file ~d~%" outputFile)))))))
 
 (main)
