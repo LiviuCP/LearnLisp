@@ -43,8 +43,8 @@
   (setq leftIndex 0)
   (when (not (null left))                              ; adjust array to contain only numbers from interval
     (dotimes (index (fill-pointer identifiedPrimes))
-      (when (>= (aref identifiedPrimes index) left)
-	(setq leftIndex index)
+      (if (< (aref identifiedPrimes index) left)
+	  (incf leftIndex 1)
 	(return))))
   (setq finalNrOfElements (- (fill-pointer identifiedPrimes) leftIndex))
   (setq identifiedPrimesFinal (make-array `(,finalNrOfElements) :displaced-to identifiedPrimes :displaced-index-offset leftIndex))
