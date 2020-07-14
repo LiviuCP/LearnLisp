@@ -6,8 +6,8 @@
   (check-type second integer)
   (assert (and (/= first 0) (/= second 0)) (first second) "Both arguments should be different from 0")
   (setq result 1)
-  (setq divided first)
-  (setq divider second)
+  (setq divided (abs first)) ; ensure the g.c.d. is positive to avoid any confusion
+  (setq divider (abs second))
   (loop
    (setq remainder (rem divided divider))
    (cond ((= remainder 0)(setq result divider)(return))
