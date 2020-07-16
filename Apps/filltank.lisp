@@ -1,17 +1,5 @@
+(load "../Libs/inputoutput.lisp")
 (load "../Libs/parse.lisp")
-
-(defun requestInput(message)
-  (check-type message string)
-  (setq result nil)
-  (loop
-   (princ message)
-   (setq input (read-line))
-   (setq input (string-left-trim " " input))
-   (setq input (string-right-trim " " input))
-   (cond ((= (length input) 0) (return))
-	 ((isStringInteger input) (setq result (parse-integer input)) (if (> result 0) (return) (write-line "The number should be strictly positive. Please try again")))
-	 (t (write-line "You haven't entered a valid number. Please try again"))))
-  (return-from requestInput result))
 
 (defun requestContainerParams()
   (setq result nil)
@@ -20,7 +8,7 @@
   (princ "Enter the container name (press ENTER to stop input): ")
   (setq containerName (read-line))
   (when (> (length containerName) 0)
-    (setq containerCapacity (requestInput "Enter the container capacity (press ENTER to stop input): "))
+    (setq containerCapacity (requestIntInputWithCondition "Enter the container capacity (press ENTER to stop input): " #'(lambda(val)(setq isGreater (> val 0))) "The number should be strictly positive. Please try again"))
     (if (not (null containerCapacity))
 	(setq result (list containerName containerCapacity))))
   (return-from requestContainerParams result)
@@ -33,7 +21,7 @@
   (terpri)
   (setq containers (list)) ; all available containers
   (setq usedContainers (list)) ; containers effectively used for filling in the tank
-  (setq tankCapacity (requestInput "Enter the requested tank capacity (press ENTER to quit): "))
+  (setq tankCapacity (requestIntInputWithCondition "Enter the requested tank capacity (press ENTER to quit): " #'(lambda(val)(setq isGreater (> val 0))) "The number should be strictly positive. Please try again"))
   (terpri)
   (if (null tankCapacity)
       (write-line "You quit!")
