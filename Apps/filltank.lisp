@@ -20,6 +20,7 @@
   (write-line "The tank is initially empty")
   (terpri)
   (setq containers (list)) ; all available containers
+  (setq containersHash (make-hash-table :test #'equal)) ; this table is required for avoiding duplicate container names. If the user enters a container with same name the value from previous container is overwritten
   (setq usedContainers (list)) ; containers effectively used for filling in the tank
   (setq tankCapacity (requestIntInputWithCondition "Enter the requested tank capacity (press ENTER to quit): " #'(lambda(val)(setq isGreater (> val 0))) "The number should be strictly positive. Please try again"))
   (terpri)
@@ -30,11 +31,13 @@
        (setq params (requestContainerParams))
        (if (null params)
 	   (return)
-	 (setq containers (cons params containers)))) ; it is possible to override values from hash, e.g. if the user has entered the wrong capacity for one of the containers
+	 (setf (gethash (car params) containersHash) (cadr params))))
       (terpri)
-      (if (= (length containers) 0)
+      (if (= (hash-table-count containersHash) 0)
 	  (write-line "No containers added to input!")
 	(progn
+	  (loop for v being the hash-values of containersHash using (hash-key k)
+		do (setq containers (cons (list k v) containers)))
 	  (sort containers #'> :key #'cadr) ; use greedy algorithm for filling in the tank (start with highest capacity container)
 	  (setq remainingTankCapacity tankCapacity)
 	  (loop for container in containers
@@ -50,9 +53,6 @@
 	      (format t "Filled tank capacity: ~d liters~%" (- tankCapacity remainingTankCapacity))
 	      (format t "~d containers used: ~a~%" (length usedContainers) (map 'list #'car usedContainers))
 	      (if (= remainingTankCapacity 0)
-		  (write-line "The whole tank has been filled! Congrats!"))))))))
-)
+		  (write-line "The whole tank has been filled! Congrats!")))))))))
 
 (main)
-
-
