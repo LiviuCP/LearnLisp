@@ -14,6 +14,8 @@
 ; condition should be a lambda function that contains a single param to which the converted value (result) is passed as arg, e.g. #'(lambda(val)(setq res (> val 0)))
 (defun requestIntInputWithCondition(message condition conditionErrorMessage)
   (check-type message string)
+  (check-type condition function)
+  (check-type conditionErrorMessage string)
   (setq result nil)
   (loop
    (princ message)
