@@ -10,7 +10,7 @@
   (assert-equal (gCommonDiv -1 1) 1)
   (assert-equal (gCommonDiv 17 19) 1)
   (assert-equal (gCommonDiv -30 15) 15)
-  )
+)
 
 (define-test test-greatest-common-div-prime-factors
   (assert-equal (gCommonDivPrimeFactors 6 10) 2)
@@ -22,6 +22,25 @@
   (assert-equal (gCommonDivPrimeFactors -1 1) 1)
   (assert-equal (gCommonDivPrimeFactors 17 19) 1)
   (assert-equal (gCommonDivPrimeFactors -30 15) 15)
+)
+
+(define-test test-least-common-mul-prime-factors
+  (assert-equal (lCommonMulPrimeFactors 6 10) 30)
+  (assert-equal (lCommonMulPrimeFactors -10 -6) 30)
+  (assert-equal (lCommonMulPrimeFactors 20 -8) 40)
+  (assert-equal (lCommonMulPrimeFactors -8 20) 40)
+  (assert-equal (lCommonMulPrimeFactors 15 32) 480)
+  (assert-equal (lCommonMulPrimeFactors 4 4) 4)
+  (assert-equal (lCommonMulPrimeFactors -1 1) 1)
+  (assert-equal (lCommonMulPrimeFactors 17 19) 323)
+  (assert-equal (lCommonMulPrimeFactors -30 15) 30)
+  (assert-equal (lCommonMulPrimeFactors 7 -14) 14)
+  (assert-equal (lCommonMulPrimeFactors 7 4) 28)
+  (assert-equal (lCommonMulPrimeFactors 14 7) 14)
+  (assert-equal (lCommonMulPrimeFactors -4 7) 28)
+  (assert-equal (lCommonMulPrimeFactors 7 -7) 7)
+  (assert-equal (lCommonMulPrimeFactors 1620 1512) 22680)
+  (assert-equal (lCommonMulPrimeFactors 180 -525) 6300)
 )
 
 (define-test test-prime-numbers-in-interval

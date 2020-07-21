@@ -38,6 +38,40 @@
   (return-from gCommonDivPrimeFactors gcd)
 )
 
+; calculates the least common multiple by using prime factors decomposition
+(defun lCommonMulPrimeFactors(first second)
+  (check-type first integer)
+  (check-type second integer)
+  (assert (and (/= first 0) (/= second 0)) (first second) "Both arguments should be different from 0")
+  (defun getLcmOnePrimeNumber(primeNr notPrimeNr)
+    (setq lcmOnePrime 1)
+    (if (= (rem notPrimeNr primeNr) 0)
+	(setq lcmOnePrime (abs notPrimeNr))
+      (setq lcmOnePrime (* primeNr notPrimeNr)))
+    (return-from getLcmOnePrimeNumber lcmOnePrime))
+  (setq lcm 1)
+  (setq absFirst (abs first)) ; simplify by using absolute values for retrieving l.c.m.
+  (setq absSecond (abs second))
+  (setq primeFactorsFirst (getPrimeFactorsForNumber absFirst))
+  (setq primeFactorsSecond (getPrimeFactorsForNumber absSecond))
+  (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
+	 (setq consolidatedPrimeFactors primeFactorsSecond)
+	 (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the maximum exponent to calculate l.c.m.
+	       do
+	       (setq resultingExponent (gethash primeFactor primeFactorsFirst))
+	       (when (not (null (gethash primeFactor primeFactorsSecond)))
+		 (setq resultingExponent (max resultingExponent (gethash primeFactor primeFactorsSecond))))
+	       (setf (gethash primeFactor consolidatedPrimeFactors) resultingExponent))
+	 (loop for primeFactor being each hash-key of consolidatedPrimeFactors ; calculate l.c.m. based on consolidated prime factors
+	       do
+	       (setq lcm (* lcm (expt primeFactor (gethash primeFactor consolidatedPrimeFactors))))))
+	((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq lcm (getLcmOnePrimeNumber absSecond absFirst))) ; second number is prime, no need to use prime factors
+	((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq lcm (getLcmOnePrimeNumber absFirst absSecond))) ; first number is prime, no need to use prime factors
+	((= absFirst absSecond) (setq lcm absFirst))
+	(t (setq lcm (* absFirst absSecond))))
+  (return-from lCommonMulPrimeFactors lcm)
+)
+
 ; retrieve prime factors for a number that is not prime
 (defun getPrimeFactorsForNumber(number)
   (check-type number integer)
@@ -70,6 +104,7 @@
     (return-from getPrimeFactorsForNumber result)
 )
 
+; get prime numbers in a specific interval (default [2; right])
 (defun getPrimeNumbers(right &optional left) ; the search interval has only one mandatory defined margin, namely the right one (left is optional, if not defined than it is presumed 2 - first relevant prime nr)
   (check-type right integer)
   (assert (> right 1) (right) "The given threshold is invalid")
