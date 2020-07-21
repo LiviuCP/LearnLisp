@@ -22,6 +22,11 @@
   (assert-equal (gCommonDivPrimeFactors -1 1) 1)
   (assert-equal (gCommonDivPrimeFactors 17 19) 1)
   (assert-equal (gCommonDivPrimeFactors -30 15) 15)
+  (assert-equal (gCommonDivPrimeFactors 7 -14) 7)
+  (assert-equal (gCommonDivPrimeFactors 7 4) 1)
+  (assert-equal (gCommonDivPrimeFactors 14 7) 7)
+  (assert-equal (gCommonDivPrimeFactors -4 7) 1)
+  (assert-equal (gCommonDivPrimeFactors 7 -7) 7)
 )
 
 (define-test test-least-common-mul-prime-factors

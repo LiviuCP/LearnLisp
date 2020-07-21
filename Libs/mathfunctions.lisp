@@ -25,16 +25,19 @@
 	(setq gcdOnePrime primeNr))
     (return-from getGcdOnePrimeNumber gcdOnePrime))
   (setq gcd 1)
-  (setq primeFactorsFirst (getPrimeFactorsForNumber first))
-  (setq primeFactorsSecond (getPrimeFactorsForNumber second))
+  (setq absFirst (abs first)) ; simplify by using absolute values for retrieving l.c.m.
+  (setq absSecond (abs second))
+  (setq primeFactorsFirst (getPrimeFactorsForNumber absFirst))
+  (setq primeFactorsSecond (getPrimeFactorsForNumber absSecond))
   (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
 	 (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the minimum exponent to calculate g.c.d.
 	       do (when (not (null (gethash primeFactor primeFactorsSecond)))
 		    (setq firstExponent (gethash primeFactor primeFactorsFirst))
 		    (setq secondExponent (gethash primeFactor primeFactorsSecond))
 		    (setq gcd (* gcd (expt primeFactor (min firstExponent secondExponent)))))))
-	((and (not (null primeFactorsFirst)) (null primeFactorsSecond)) (setq gcd (getGcdOnePrimeNumber second first))) ; second number is prime, no need to use prime factors
-	((and (not (null primeFactorsSecond)) (null primeFactorsFirst)) (setq gcd (getGcdOnePrimeNumber first second)))) ; first number is prime, no need to use prime factors
+	((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq gcd (getGcdOnePrimeNumber absSecond absFirst))) ; second number is prime, no need to use prime factors
+	((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq gcd (getGcdOnePrimeNumber absFirst absSecond))) ; first number is prime, no need to use prime factors
+	((= absFirst absSecond) (setq gcd absFirst)))
   (return-from gCommonDivPrimeFactors gcd)
 )
 
