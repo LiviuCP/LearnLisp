@@ -19,3 +19,27 @@
   (assert-true (isStringInteger "0014"))
   (assert-true (isStringInteger "-0015")))
 
+(define-test test-is-string-convertible-to-float
+  (assert-true (isStringConvertibleToFloat "-1.5"))
+  (assert-true (isStringConvertibleToFloat "1.89"))
+  (assert-true (isStringConvertibleToFloat "12"))
+  (assert-true (isStringConvertibleToFloat "-4"))
+  (assert-true (isStringConvertibleToFloat "0"))
+  (assert-true (isStringConvertibleToFloat "0.0"))
+  (assert-true (isStringConvertibleToFloat "-0"))
+  (assert-true (isStringConvertibleToFloat "-0.00"))
+  (assert-true (isStringConvertibleToFloat "11.000"))
+  (assert-true (isStringConvertibleToFloat "01.23"))
+  (assert-true (isStringConvertibleToFloat "-02.4500")))
+
+(define-test test-is-string-not-convertible-to-float
+  (assert-false (isStringConvertibleToFloat "a.5"))
+  (assert-false (isStringConvertibleToFloat "-5.a"))
+  (assert-false (isStringConvertibleToFloat "b"))
+  (assert-false (isStringConvertibleToFloat "1.5.2"))
+  (assert-false (isStringConvertibleToFloat "-.5"))
+  (assert-false (isStringConvertibleToFloat "-5-"))
+  (assert-false (isStringConvertibleToFloat " 5.2"))
+  (assert-false (isStringConvertibleToFloat "-5. 25"))
+  (assert-false (isStringConvertibleToFloat "2.25 "))
+  (assert-false (isStringConvertibleToFloat "")))
