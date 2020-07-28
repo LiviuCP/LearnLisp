@@ -1,4 +1,5 @@
 (defun isStringInteger(str)
+  (check-type str string)
   (setq digits (list #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
   (setq isInteger t)
   (cond ((= (length str) 0) (setq isInteger nil))                                             ; case 1: no characters
