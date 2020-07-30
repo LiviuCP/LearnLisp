@@ -2,24 +2,26 @@
 
 (defconstant epsilon (expt 10 -6))
 
-(define-test test-is-string-not-integer
-  (assert-false (isStringInteger "a"))
-  (assert-false (isStringInteger "-1b"))
-  (assert-false (isStringInteger "1 2"))
-  (assert-false (isStringInteger ""))
-  (assert-false (isStringInteger ".12"))
-  (assert-false (isStringInteger " 1"))
-  (assert-false (isStringInteger "-2 "))
-  (assert-false (isStringInteger "1+2"))
-  (assert-false (isStringInteger "1-23")))
+(define-test test-convert-to-integer
+  (assert-true (= (convertStringToInt "0") 0))
+  (assert-true (= (convertStringToInt "00") 0))
+  (assert-true (= (convertStringToInt "-12") -12))
+  (assert-true (= (convertStringToInt "45") 45))
+  (assert-true (= (convertStringToInt "0014") 14))
+  (assert-true (= (convertStringToInt "-0015") -15))
+  (assert-true (= (convertStringToInt "-0023456000078") -23456000078))
+  (assert-true (= (convertStringToInt "0000444455967") 444455967)))
 
-(define-test test-is-string-integer
-  (assert-true (isStringInteger "0"))
-  (assert-true (isStringInteger "00"))
-  (assert-true (isStringInteger "-12"))
-  (assert-true (isStringInteger "45"))
-  (assert-true (isStringInteger "0014"))
-  (assert-true (isStringInteger "-0015")))
+(define-test test-cannot-convert-to-integer
+  (assert-false (convertStringToInt "a"))
+  (assert-false (convertStringToInt "-1b"))
+  (assert-false (convertStringToInt "1 2"))
+  (assert-false (convertStringToInt ""))
+  (assert-false (convertStringToInt ".12"))
+  (assert-false (convertStringToInt " 1"))
+  (assert-false (convertStringToInt "-2 "))
+  (assert-false (convertStringToInt "1+2"))
+  (assert-false (convertStringToInt "1-23")))
 
 (define-test test-convert-to-float
   (assert-true (<= (abs (- 2.345678000001 (convertStringToFloat "2.345678000001"))) epsilon))
