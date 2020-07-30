@@ -1,3 +1,5 @@
+(defconstant digits (list #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
+
 (defun getDigitCharToNumberHash()
     (setq digitHash (make-hash-table))
     (setf (gethash #\0 digitHash) 0)
@@ -12,23 +14,20 @@
     (setf (gethash #\9 digitHash) 9)
     (return-from getDigitCharToNumberHash digitHash))
 
-(defun isStringInteger(str)
-  (check-type str string)
-  (setq digits (list #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
-  (setq isInteger t)
-  (cond ((= (length str) 0) (setq isInteger nil))                                             ; case 1: no characters
-	((and (= (length str) 1) (not (member (aref str 0) digits))) (setq isInteger nil))    ; case 2: single character, should be numeric
-	((> (length str) 1)                                                                   ; case 3: more than one character, only first character can be '-' (all others should be numeric)
-	 (if (not (or (member (aref str 0) digits) (char-equal (aref str 0) #\-)))
-	      (setq isInteger nil)
-	    (loop for index from 1 to (- (length str) 1)
-		  do (when (not (member (aref str index) digits))
-		       (setq isInteger nil)
-		       (return))))))
-  (return-from isStringInteger isInteger))
-
 ; own implementation of parse-integer
 (defun convertStringToInt(str)
+  (defun isStringInteger(str)
+    (setq isInteger t)
+    (cond ((= (length str) 0) (setq isInteger nil))                                             ; case 1: no characters
+	  ((and (= (length str) 1) (not (member (aref str 0) digits))) (setq isInteger nil))    ; case 2: single character, should be numeric
+	  ((> (length str) 1)                                                                   ; case 3: more than one character, only first character can be '-' (all others should be numeric)
+	   (if (not (or (member (aref str 0) digits) (char-equal (aref str 0) #\-)))
+	       (setq isInteger nil)
+	     (loop for index from 1 to (- (length str) 1)
+		   do (when (not (member (aref str index) digits))
+			(setq isInteger nil)
+			(return))))))
+    (return-from isStringInteger isInteger))
   (check-type str string)
   (setq intResult nil)
   (when (isStringInteger str)
@@ -54,7 +53,6 @@
   (defun isStringConvertibleToFloat(str)
     (setq isNegative nil)
     (setq commaPosition -1)
-    (setq digits (list #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
     (setq state 0)
     (cond ((= (length str) 0) (setq state 5))
 	  ((char-equal (aref str 0) #\-) (setq state 1) (setq isNegative t))
