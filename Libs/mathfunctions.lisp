@@ -5,14 +5,12 @@
   (check-type first integer)
   (check-type second integer)
   (assert (and (/= first 0) (/= second 0)) (first second) "Both arguments should be different from 0")
-  (setq result 1)
-  (setq divided (abs first)) ; ensure the g.c.d. is positive to avoid any confusion
-  (setq divider (abs second))
-  (loop
-   (setq remainder (rem divided divider))
-   (cond ((= remainder 0)(setq result divider)(return))
-	 (t (setq divided divider) (setq divider remainder))))
-  (return-from gCommonDiv result))
+  (let ((result 1) (divided (abs first)) (divider (abs second)) (remainder)) ; ensure the g.c.d. is positive to avoid any confusion
+    (loop
+     (setq remainder (rem divided divider))
+     (cond ((= remainder 0)(setq result divider)(return))
+	   (t (setq divided divider) (setq divider remainder))))
+    (return-from gCommonDiv result)))
 
 ; calculates the greatest common divisor by using prime factors decomposition
 (defun gCommonDivPrimeFactors(first second)
