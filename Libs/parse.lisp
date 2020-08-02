@@ -16,7 +16,7 @@
 
 ; own implementation of parse-integer
 (defun convertStringToInt(str)
-  (defun isStringInteger(str)
+  (defun isStringConvertibleToInteger(str)
     (setq isInteger t)
     (cond ((= (length str) 0) (setq isInteger nil))                                             ; case 1: no characters
 	  ((and (= (length str) 1) (not (member (aref str 0) digits))) (setq isInteger nil))    ; case 2: single character, should be numeric
@@ -27,10 +27,10 @@
 		   do (when (not (member (aref str index) digits))
 			(setq isInteger nil)
 			(return))))))
-    (return-from isStringInteger isInteger))
+    (return-from isStringConvertibleToInteger isInteger))
   (check-type str string)
   (setq intResult nil)
-  (when (isStringInteger str)
+  (when (isStringConvertibleToInteger str)
     (setq intResult 0)
     (setq startPos 0)
     (setq charToNumberHash (getDigitCharToNumberHash))
