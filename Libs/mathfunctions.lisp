@@ -23,17 +23,18 @@
 	  (setq gcdOnePrime primeNr))
       (return-from getGcdOnePrimeNumber gcdOnePrime)))
   ; simplify by using absolute values for retrieving l.c.m.
-  (let ((gcd 1) (absFirst (abs first)) (absSecond (abs second)))
-    (let ((primeFactorsFirst (getPrimeFactorsForNumber absFirst)) (primeFactorsSecond (getPrimeFactorsForNumber absSecond)))
-      (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
-	     (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the minimum exponent to calculate g.c.d.
-		   do (when (not (null (gethash primeFactor primeFactorsSecond)))
-			(setq firstExponent (gethash primeFactor primeFactorsFirst))
-			(setq secondExponent (gethash primeFactor primeFactorsSecond))
-			(setq gcd (* gcd (expt primeFactor (min firstExponent secondExponent)))))))
-	    ((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq gcd (getGcdOnePrimeNumber absSecond absFirst))) ; second number is prime, no need to use prime factors
-	    ((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq gcd (getGcdOnePrimeNumber absFirst absSecond))) ; first number is prime, no need to use prime factors
-	    ((= absFirst absSecond) (setq gcd absFirst))))
+  (let ((gcd 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst nil) (primeFactorsSecond nil))
+    (setq primeFactorsFirst (getPrimeFactorsForNumber absFirst))
+    (setq primeFactorsSecond (getPrimeFactorsForNumber absSecond))
+    (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
+	   (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the minimum exponent to calculate g.c.d.
+		 do (when (not (null (gethash primeFactor primeFactorsSecond)))
+		      (setq firstExponent (gethash primeFactor primeFactorsFirst))
+		      (setq secondExponent (gethash primeFactor primeFactorsSecond))
+		      (setq gcd (* gcd (expt primeFactor (min firstExponent secondExponent)))))))
+	  ((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq gcd (getGcdOnePrimeNumber absSecond absFirst))) ; second number is prime, no need to use prime factors
+	  ((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq gcd (getGcdOnePrimeNumber absFirst absSecond))) ; first number is prime, no need to use prime factors
+	  ((= absFirst absSecond) (setq gcd absFirst)))
     (return-from gCommonDivPrimeFactors gcd)))
 
 ; calculates the least common multiple by using prime factors decomposition
@@ -47,23 +48,24 @@
 	  (setq lcmOnePrime (abs notPrimeNr))
 	(setq lcmOnePrime (* primeNr notPrimeNr)))
     (return-from getLcmOnePrimeNumber lcmOnePrime)))
-  (let ((lcm 1) (absFirst (abs first)) (absSecond (abs second)))
-    (let ((primeFactorsFirst (getPrimeFactorsForNumber absFirst)) (primeFactorsSecond (getPrimeFactorsForNumber absSecond)))
-      (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
-	     (setq consolidatedPrimeFactors primeFactorsSecond)
-	     (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the maximum exponent to calculate l.c.m.
-		   do
-		   (setq resultingExponent (gethash primeFactor primeFactorsFirst))
-		   (when (not (null (gethash primeFactor primeFactorsSecond)))
-		     (setq resultingExponent (max resultingExponent (gethash primeFactor primeFactorsSecond))))
-		   (setf (gethash primeFactor consolidatedPrimeFactors) resultingExponent))
-	     (loop for primeFactor being each hash-key of consolidatedPrimeFactors ; calculate l.c.m. based on consolidated prime factors
-		   do
-		   (setq lcm (* lcm (expt primeFactor (gethash primeFactor consolidatedPrimeFactors))))))
-	    ((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq lcm (getLcmOnePrimeNumber absSecond absFirst))) ; second number is prime, no need to use prime factors
-	    ((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq lcm (getLcmOnePrimeNumber absFirst absSecond))) ; first number is prime, no need to use prime factors
-	    ((= absFirst absSecond) (setq lcm absFirst))
-	    (t (setq lcm (* absFirst absSecond)))))
+  (let ((lcm 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst nil) (primeFactorsSecond nil))
+    (setq primeFactorsFirst (getPrimeFactorsForNumber absFirst))
+    (setq primeFactorsSecond (getPrimeFactorsForNumber absSecond))
+    (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
+	   (setq consolidatedPrimeFactors primeFactorsSecond)
+	   (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the maximum exponent to calculate l.c.m.
+		 do
+		 (setq resultingExponent (gethash primeFactor primeFactorsFirst))
+		 (when (not (null (gethash primeFactor primeFactorsSecond)))
+		   (setq resultingExponent (max resultingExponent (gethash primeFactor primeFactorsSecond))))
+		 (setf (gethash primeFactor consolidatedPrimeFactors) resultingExponent))
+	   (loop for primeFactor being each hash-key of consolidatedPrimeFactors ; calculate l.c.m. based on consolidated prime factors
+		 do
+		 (setq lcm (* lcm (expt primeFactor (gethash primeFactor consolidatedPrimeFactors))))))
+	  ((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq lcm (getLcmOnePrimeNumber absSecond absFirst))) ; second number is prime, no need to use prime factors
+	  ((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq lcm (getLcmOnePrimeNumber absFirst absSecond))) ; first number is prime, no need to use prime factors
+	  ((= absFirst absSecond) (setq lcm absFirst))
+	  (t (setq lcm (* absFirst absSecond))))
     (return-from lCommonMulPrimeFactors lcm)))
 
 ; retrieve prime factors for a number that is not prime
