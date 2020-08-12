@@ -47,7 +47,7 @@
 (defun convertStringToFloat(str)
   ; state-machine with states: 0 - Init, 1 - SignAdded, 2 - LeftDigitsAdded, 3 - CommaAdded, 4 - RightDigitsAdded, 5 - Invalid (possibly to be revised as use of "magic numbers" is not the best solution)
   (check-type str string)
-  (let ((commaPosition -1) (isNegative nil))
+  (let ((commaPosition -1) (isNegative nil) (result nil))
     (defun isStringConvertibleToFloat(str)
       (setq isNegative nil)
       (setq commaPosition -1)
@@ -69,27 +69,26 @@
 		    (4 (cond ((not (member (aref str index) digits)) (setq state 5))))
 		    (5 (return))))))
 	(return-from isStringConvertibleToFloat (or (= state 2) (= state 4))))) ; the string should be an integer or a float
-    (let ((result nil))
-      (when (isStringConvertibleToFloat str)
-	(setq result 0.0)
-	(let ((integerPart nil) (decimalPart nil))
-	  (cond ((/= commaPosition -1) ; lacking comma position means no decimal part
-		 (setq decimalPart (subseq str (+ commaPosition 1)))
-		 (if (not (null isNegative))
-		     (setq integerPart (subseq str 1 commaPosition))
-		   (setq integerPart (subseq str 0 commaPosition))))
-		((not (null isNegative)) (setq integerPart (subseq str 1)))
-		(t (setq integerPart str)))
-	  (let ((charToNumberHash (getDigitCharToNumberHash)))
-	    (when (not (null decimalPart)) ; optional: get decimal part of the number
-	      (loop for index from 0 to (- (length decimalPart) 1)
-		    do
-		    (let ((decimalDigitExponent (+ 1 index)) (decimalPartDigit (gethash (aref decimalPart index) charToNumberHash)))
-		      (setq result (+ result (* decimalPartDigit (expt 0.1 decimalDigitExponent)))))))
-	    (loop for index from 0 to (- (length integerPart) 1) ; mandatory: get integer part of the number
+    (when (isStringConvertibleToFloat str)
+      (setq result 0.0)
+      (let ((integerPart nil) (decimalPart nil))
+	(cond ((/= commaPosition -1) ; lacking comma position means no decimal part
+	       (setq decimalPart (subseq str (+ commaPosition 1)))
+	       (if (not (null isNegative))
+		   (setq integerPart (subseq str 1 commaPosition))
+		 (setq integerPart (subseq str 0 commaPosition))))
+	      ((not (null isNegative)) (setq integerPart (subseq str 1)))
+	      (t (setq integerPart str)))
+	(let ((charToNumberHash (getDigitCharToNumberHash)))
+	  (when (not (null decimalPart)) ; optional: get decimal part of the number
+	    (loop for index from 0 to (- (length decimalPart) 1)
 		  do
-		  (let ((intDigitExponent (- (length integerPart) 1 index)) (intPartDigit (gethash (aref integerPart index) charToNumberHash))) 
-		    (setq result (+ result (* intPartDigit (expt 10 intDigitExponent))))))))
-	(if (not (null isNegative)) ; finally add negative sign (if applicable)
-	    (setq result (- 0 result))))
-      (return-from convertStringToFloat result))))
+		  (let ((decimalDigitExponent (+ 1 index)) (decimalPartDigit (gethash (aref decimalPart index) charToNumberHash)))
+		    (setq result (+ result (* decimalPartDigit (expt 0.1 decimalDigitExponent)))))))
+	  (loop for index from 0 to (- (length integerPart) 1) ; mandatory: get integer part of the number
+		do
+		(let ((intDigitExponent (- (length integerPart) 1 index)) (intPartDigit (gethash (aref integerPart index) charToNumberHash))) 
+		  (setq result (+ result (* intPartDigit (expt 10 intDigitExponent))))))))
+      (if (not (null isNegative)) ; finally add negative sign (if applicable)
+	  (setq result (- 0 result))))
+    (return-from convertStringToFloat result)))
