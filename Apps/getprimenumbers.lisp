@@ -4,10 +4,10 @@
 
 (defun main()
   (defconstant outputFile "/tmp/primes.txt")
-  (let ((left nil) (right nil))
-    (setq left (requestIntInputWithCondition "Enter the left interval margin: " #'(lambda(val)(let ((isGreater nil))(setq isGreater (> val 1)))) "The number should be greater than 1. Please try again"))
+  (let ((left) (right))
+    (setq left (requestIntInputWithCondition "Enter the left interval margin: " #'(lambda(val)(let ((isGreater)) (setq isGreater (> val 1)))) "The number should be greater than 1. Please try again"))
     (when (not (null left))
-      (setq right (requestIntInputWithCondition "Enter the right interval margin: " #'(lambda(val)(let ((isGreater nil))(setq isGreater (> val 1)))) "The number should be greater than 1. Please try again")))
+      (setq right (requestIntInputWithCondition "Enter the right interval margin: " #'(lambda(val)(let ((isGreater)) (setq isGreater (> val 1)))) "The number should be greater than 1. Please try again")))
     (cond ((null right) (write-line "You quit"))
 	  (t (let ((primes (list)))
 	       (cond ((> left right) (let ((temp left)) (setq left right) (setq right temp))))
