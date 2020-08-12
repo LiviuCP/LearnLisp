@@ -1,6 +1,6 @@
 (defun requestIntInput(message)
   (check-type message string)
-  (let ((result nil))
+  (let ((result))
     (loop
      (princ message)
      (let ((input (read-line)))
@@ -17,7 +17,7 @@
   (check-type message string)
   (check-type condition function)
   (check-type conditionErrorMessage string)
-  (let ((result nil))
+  (let ((result))
     (loop
      (princ message)
      (let ((input (read-line)))
