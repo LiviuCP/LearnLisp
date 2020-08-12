@@ -12,7 +12,7 @@
 		do (setq primeFactorsList (cons (list k v) primeFactorsList)))
 	  (sort primeFactorsList #'< :key #'cadr)))
       (return-from getOrderedPrimeFactorsList primeFactorsList)))
-  (let ((first nil) (second nil)) ; declare the variables here for a better overview
+  (let ((first) (second)) ; declare the variables here for a better overview
     (setq first (requestIntInputWithCondition "Enter the first number: " #'(lambda(val)(setq isDifferent (/= val 0))) "The number should be different from 0. Please try again"))
     (when (not (null first))
       (setq second (requestIntInputWithCondition "Enter the second number: " #'(lambda(val)(setq isDifferent (/= val 0))) "The number should be different from 0. Please try again")))
