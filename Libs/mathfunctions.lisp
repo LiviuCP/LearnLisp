@@ -23,7 +23,7 @@
 	  (setq gcdOnePrime primeNr))
       (return-from getGcdOnePrimeNumber gcdOnePrime)))
   ; simplify by using absolute values for retrieving l.c.m.
-  (let ((gcd 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst nil) (primeFactorsSecond nil))
+  (let ((gcd 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst) (primeFactorsSecond))
     (setq primeFactorsFirst (getPrimeFactorsForNumber absFirst))
     (setq primeFactorsSecond (getPrimeFactorsForNumber absSecond))
     (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
@@ -47,7 +47,7 @@
 	  (setq lcmOnePrime (abs notPrimeNr))
 	(setq lcmOnePrime (* primeNr notPrimeNr)))
     (return-from getLcmOnePrimeNumber lcmOnePrime)))
-  (let ((lcm 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst nil) (primeFactorsSecond nil))
+  (let ((lcm 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst) (primeFactorsSecond))
     (setq primeFactorsFirst (getPrimeFactorsForNumber absFirst))
     (setq primeFactorsSecond (getPrimeFactorsForNumber absSecond))
     (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
@@ -76,7 +76,7 @@
       (dotimes (index arrayLength)
 	(setq primesList (cons (aref primesArray (- (- arrayLength 1) index)) primesList)))
       (return-from convertPrimesArrayToList primesList)))
-  (let ((result nil) (numberToDivide (abs number))) ; key = prime number, value = number of occurrences within the numberToDivide (power exponent)
+  (let ((result) (numberToDivide (abs number))) ; key = prime number, value = number of occurrences within the numberToDivide (power exponent)
     (when (not (= numberToDivide 1))
       (let ((primesUntilNumber (convertPrimesArrayToList (getPrimeNumbers numberToDivide))))
 	(when (not (member numberToDivide primesUntilNumber))
@@ -104,14 +104,14 @@
     (check-type left integer)
     (assert (and (> left 1) (> right left)) (left right) "The given interval is invalid"))
   ; initial allocation of 10% of all numbers belonging to interval (adjust if required), min 2 elements (2, 3) required
-  (let ((initialPrimesArrayCapacity (+ (floor right 10) 2)) (identifiedPrimes nil) (identifiedPrimesFinal nil))
+  (let ((initialPrimesArrayCapacity (+ (floor right 10) 2)) (identifiedPrimes) (identifiedPrimesFinal))
     (setq identifiedPrimes (make-array `(,initialPrimesArrayCapacity) :fill-pointer 2 :adjustable t))
     (setf (aref identifiedPrimes 0) 2)                         ; seed the list of prime numbers (first number not to be used for checking as it is the only even one)
     (setf (aref identifiedPrimes 1) 3)
     (do ((currentNrToCheck 5 (+ currentNrToCheck 2)))          ; only check odd numbers for prime-ness
 	((> currentNrToCheck right))
 	(dotimes (index (- (fill-pointer identifiedPrimes) 1)) ; exclude 2 from primes number check base
-	  (let ((currentPrimeNr (aref identifiedPrimes (+ index 1))) (quotient nil) (remainder nil))
+	  (let ((currentPrimeNr (aref identifiedPrimes (+ index 1))) (quotient) (remainder))
 	    (setq quotient (floor currentNrToCheck currentPrimeNr))
 	    (setq remainder (rem currentNrToCheck currentPrimeNr))
 	    (when (= 0 remainder)
