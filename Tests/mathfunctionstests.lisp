@@ -64,7 +64,7 @@
   (assert-false (getPrimeFactorsForNumber 2))
   (assert-false (getPrimeFactorsForNumber 7))
 
-  (let ((primeFactors nil))
+  (let ((primeFactors))
     (setq primeFactors (getPrimeFactorsForNumber 6))
     (assert-true (= (gethash 2 primeFactors) 1)) ; assert-equal doesn't seem to work in these cases
     (assert-true (= (gethash 3 primeFactors) 1))
