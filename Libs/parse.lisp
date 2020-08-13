@@ -46,11 +46,10 @@
 
 (defun convertStringToFloat(str)
   ; state-machine with states: 0 - Init, 1 - SignAdded, 2 - LeftDigitsAdded, 3 - CommaAdded, 4 - RightDigitsAdded, 5 - Invalid (possibly to be revised as use of "magic numbers" is not the best solution)
+  ; for fraction we have the additional states: 6 - SlashAdded, 7 - SecondSignAdded
   (check-type str string)
-  (let ((commaPosition -1) (isNegative nil) (result nil))
+  (let ((commaPosition -1) (slashPosition -1) (isNegative) (isDivisionByZero nil) (result))
     (defun isStringConvertibleToFloat(str)
-      (setq isNegative nil)
-      (setq commaPosition -1)
       (let ((state 0))
 	(cond ((= (length str) 0) (setq state 5))
 	      ((char-equal (aref str 0) #\-) (setq state 1) (setq isNegative t))
@@ -63,32 +62,64 @@
 		    (1 (cond ((member (aref str index) digits) (setq state 2))
 			     (t (setq state 5))))
 		    (2 (cond ((char-equal (aref str index) #\.) (setq state 3) (setq commaPosition index))
+			     ((char-equal (aref str index) #\/) (setq state 6) (setq slashPosition index))
 			     ((not (member (aref str index) digits)) (setq state 5))))
 		    (3 (cond ((member (aref str index) digits) (setq state 4))
 			     (t (setq state 5))))
 		    (4 (cond ((not (member (aref str index) digits)) (setq state 5))))
-		    (5 (return))))))
-	(return-from isStringConvertibleToFloat (or (= state 2) (= state 4))))) ; the string should be an integer or a float
+		    (5 (return))
+		    (6 (cond ((member (aref str index) digits) (setq state 4))
+			     ((char-equal (aref str index) #\-) (setq state 7) (setq isNegative (not isNegative)))
+			     (t (setq state 5))))
+		    (7 (cond ((member (aref str index) digits) (setq state 4))
+			     (t (setq state 5))))))))
+	; if the string is a fraction it should not be convertible if a division by zero is detected
+	(when (and (/= slashPosition -1) (= state 4))
+	    (let ((denNumString) (denNumStartPosition (+ slashPosition 1))) ; denominator numeric (sub)string and (sub)string start index
+	      (when (char-equal (aref str denNumStartPosition) #\-)
+		(incf denNumStartPosition 1))
+	      (setq denNumString (string-left-trim "0" (subseq str denNumStartPosition)))
+	      (if (= (length denNumString) 0)
+		  (setq isDivisionByZero t))))
+	(return-from isStringConvertibleToFloat (or (= state 2) (and (= state 4) (not isDivisionByZero)))))) ; the string should be an integer or a float/fraction
     (when (isStringConvertibleToFloat str)
       (setq result 0.0)
-      (let ((integerPart nil) (decimalPart nil))
-	(cond ((/= commaPosition -1) ; lacking comma position means no decimal part
-	       (setq decimalPart (subseq str (+ commaPosition 1)))
-	       (if (not (null isNegative))
-		   (setq integerPart (subseq str 1 commaPosition))
-		 (setq integerPart (subseq str 0 commaPosition))))
-	      ((not (null isNegative)) (setq integerPart (subseq str 1)))
-	      (t (setq integerPart str)))
+      (let ((leftNumberString) (rightNumberString))
+	(cond ((/= commaPosition -1) ; case 1: decimal string, comma available
+	       (setq rightNumberString (subseq str (+ commaPosition 1)))
+	       (if (char-equal (aref str 0) #\-)
+		   (setq leftNumberString (subseq str 1 commaPosition))
+		 (setq leftNumberString (subseq str 0 commaPosition))))
+	      ((/= slashPosition -1) ; case 2: fraction string, slash available
+	       (if (char-equal (aref str 0) #\-)
+		   (setq leftNumberString (subseq str 1 slashPosition))
+		 (setq leftNumberString (subseq str 0 slashPosition)))
+	       (if (char-equal (aref str (+ slashPosition 1)) #\-)
+		   (setq rightNumberString (subseq str (+ slashPosition 2)))
+		 (setq rightNumberString (subseq str (+ slashPosition 1)))))
+	      ((not (null isNegative)) (setq leftNumberString (subseq str 1)))
+	      (t (setq leftNumberString str))) ; case 3: no comma/slash, pure integer
 	(let ((charToNumberHash (getDigitCharToNumberHash)))
-	  (when (not (null decimalPart)) ; optional: get decimal part of the number
-	    (loop for index from 0 to (- (length decimalPart) 1)
+	  (when (not (null rightNumberString)) ; optional: get right side number (decimal part / denominator)
+	    (if (/= commaPosition -1) ; decimal part scenario
+		(loop for index from 0 to (- (length rightNumberString) 1)
+		      do
+		      (let ((decimalDigitExponent (+ 1 index)) (rightNumberDigit (gethash (aref rightNumberString index) charToNumberHash)))
+			(setq result (+ result (* rightNumberDigit (expt 0.1 decimalDigitExponent))))))
+	      (let ((denominator 0)) ; denominator scenario
+		(loop for index from 0 to (- (length rightNumberString) 1)
+		      do
+		      (let ((denomDigitExponent (- (length rightNumberString) 1 index)) (rightNumberDigit (gethash (aref rightNumberString index) charToNumberHash)))
+			(setq denominator (+ denominator (* rightNumberDigit (expt 10 denomDigitExponent))))))
+		(setq result denominator))))
+	  (let ((intPart 0))
+	    (loop for index from 0 to (- (length leftNumberString) 1) ; mandatory: get integer part of the number
 		  do
-		  (let ((decimalDigitExponent (+ 1 index)) (decimalPartDigit (gethash (aref decimalPart index) charToNumberHash)))
-		    (setq result (+ result (* decimalPartDigit (expt 0.1 decimalDigitExponent)))))))
-	  (loop for index from 0 to (- (length integerPart) 1) ; mandatory: get integer part of the number
-		do
-		(let ((intDigitExponent (- (length integerPart) 1 index)) (intPartDigit (gethash (aref integerPart index) charToNumberHash))) 
-		  (setq result (+ result (* intPartDigit (expt 10 intDigitExponent))))))))
+		  (let ((intDigitExponent (- (length leftNumberString) 1 index)) (intPartDigit (gethash (aref leftNumberString index) charToNumberHash))) 
+		    (setq intPart (+ intPart (* intPartDigit (expt 10 intDigitExponent))))))
+	    (if (/= slashPosition -1)
+		(setq result (/ (* 1.0 intPart) result))
+	      (setq result (+ result intPart))))))
       (if (not (null isNegative)) ; finally add negative sign (if applicable)
 	  (setq result (- 0 result))))
     (return-from convertStringToFloat result)))
