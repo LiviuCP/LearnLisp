@@ -3,5 +3,6 @@
 
 (load "parsertests.lisp")
 (load "mathfunctionstests.lisp")
+(load "sorttests.lisp")
 
 (run-tests :all)

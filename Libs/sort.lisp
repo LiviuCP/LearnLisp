@@ -1,0 +1,12 @@
+; performs a simple "shuffle" of the array by ordering the elements: a[0] <= a[1] >= a[2] <= a[3] ... or a[0] >= a[1] <= a[2] >= a[3] ...
+(defun counterSort(inputArray &optional initiallyDecreasing)
+  (check-type inputArray array)
+  (dotimes (index (length inputArray))
+    (check-type (aref inputArray index) (or integer float rational)))
+  (let ((increasingOrderRequired (not initiallyDecreasing)))
+    (dotimes (index (- (length inputArray) 1))
+      (when (or (and increasingOrderRequired (> (aref inputArray index) (aref inputArray (+ index 1)))) (and (not increasingOrderRequired) (< (aref inputArray index) (aref inputArray (+ index 1)))))
+	  (let ((temp (aref inputArray index)))
+	    (setf (aref inputArray index) (aref inputArray (+ index 1)))
+	    (setf (aref inputArray (+ index 1)) temp)))
+      (setq increasingOrderRequired (not increasingOrderRequired))))) ; change ordering type for each step (increasing/decreasing)
