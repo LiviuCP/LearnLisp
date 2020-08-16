@@ -10,3 +10,21 @@
 	    (setf (aref inputArray index) (aref inputArray (+ index 1)))
 	    (setf (aref inputArray (+ index 1)) temp)))
       (setq increasingOrderRequired (not increasingOrderRequired))))) ; change ordering type for each step (increasing/decreasing)
+
+(defun bubbleSort(inputArray &optional sortKey)
+  (check-type inputArray array)
+  (dotimes (index (length inputArray))
+    (check-type (aref inputArray index) (or integer float rational)))
+  (if (not (null sortKey))
+      (check-type sortKey function)
+    (setq sortKey (lambda(a b)(let ((result))(setq result (<= a b))))))
+  (loop
+   (let ((sortingPerformed))
+     (dotimes (index (- (length inputArray) 1))
+       (when (not (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1))))
+	 (let ((temp (aref inputArray index)))
+	   (setf (aref inputArray index) (aref inputArray (+ index 1)))
+	   (setf (aref inputArray (+ index 1)) temp)
+	   (setq sortingPerformed t))))
+     (when (not sortingPerformed) ; stop when no item swap performed along the iteration
+       (return)))))

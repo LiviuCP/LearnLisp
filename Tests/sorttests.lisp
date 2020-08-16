@@ -62,3 +62,37 @@
     (counterSort testArray t)
     (assert-true (equalp testArray #(1/4 -2 5/3 -2.0 4 9/4 2.5 -1 5 2.25)))
 ))
+
+(define-test test-bubble-sort
+  (setq testArray (make-array '(10) :initial-contents '(2 -1 3 0 4 2 5 5 -7 8)))
+  (bubbleSort testArray)
+  (assert-true (equalp testArray #(-7 -1 0 2 2 3 4 5 5 8)))
+
+  (setq testArray (make-array '(10) :initial-contents '(2 -1 3 0 4 2 5 5 -7 8)))
+  (bubbleSort testArray (lambda(a b)(let ((result))(setq result (>= a b)))))
+  (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7)))
+
+  (setq testArray (make-array '(10) :initial-contents '(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
+  (bubbleSort testArray)
+  (assert-true (equalp testArray #(-1/2 -2/4 -2/7 1/4 1/3 4/5 9/8 9/8 5/3 5/2)))
+
+  (setq testArray (make-array '(10) :initial-contents '(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
+  (bubbleSort testArray (lambda(a b)(let ((result))(setq result (>= a b)))))
+  (assert-true (equalp testArray #(5/2 5/3 9/8 9/8 4/5 1/3 1/4 -2/7 -2/4 -1/2)))
+
+  (setq testArray (make-array '(10) :initial-contents '(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
+  (bubbleSort testArray)
+  (assert-true (equalp testArray #(-7.4 -2.5 -0.6 0.01 1.4 2.1 2.100 3.0 8.25 9.34)))
+
+  (setq testArray (make-array '(10) :initial-contents '(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
+  (bubbleSort testArray (lambda(a b)(let ((result))(setq result (>= a b)))))
+  (assert-true (equalp testArray #(9.34 8.25 3.0 2.100 2.1 1.4 0.01 -0.6 -2.5 -7.4)))
+
+  (setq testArray (make-array '(10) :initial-contents '(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
+  (bubbleSort testArray)
+  (assert-true (equalp testArray #(-2.0 -2 -1 1/4 5/3 2.25 9/4 2.5 4 5)))
+
+  (setq testArray (make-array '(10) :initial-contents '(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
+  (bubbleSort testArray (lambda(a b)(let ((result))(setq result (>= a b)))))
+  (assert-true (equalp testArray #(5 4 2.5 9/4 2.25 5/3 1/4 -1 -2 -2.0)))
+)
