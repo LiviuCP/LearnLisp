@@ -1,15 +1,19 @@
 ; performs a simple "shuffle" of the array by ordering the elements: a[0] <= a[1] >= a[2] <= a[3] ... or a[0] >= a[1] <= a[2] >= a[3] ...
-(defun counterSort(inputArray &optional initiallyDecreasing)
+; sortKey is the ordering criteria (e.g. a<=b), reverseKey is the ordering criteria of first 2 elements (according (nil) or reversed (t) to sortKey); criteria is that continually reversed for each step
+(defun counterSort(inputArray &optional reverseKey sortKey) 
   (check-type inputArray array)
   (dotimes (index (length inputArray))
     (check-type (aref inputArray index) (or integer float rational)))
-  (let ((increasingOrderRequired (not initiallyDecreasing)))
+  (if (not (null sortKey))
+      (check-type sortKey function)
+    (setq sortKey (lambda(a b)(let ((result))(setq result (<= a b))))))
+  (let ((keyOrderRequired (not reverseKey)))
     (dotimes (index (- (length inputArray) 1))
-      (when (or (and increasingOrderRequired (> (aref inputArray index) (aref inputArray (+ index 1)))) (and (not increasingOrderRequired) (< (aref inputArray index) (aref inputArray (+ index 1)))))
+      (when (or (and keyOrderRequired (not (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1))))) (and (not keyOrderRequired) (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1)))))
 	  (let ((temp (aref inputArray index)))
 	    (setf (aref inputArray index) (aref inputArray (+ index 1)))
 	    (setf (aref inputArray (+ index 1)) temp)))
-      (setq increasingOrderRequired (not increasingOrderRequired))))) ; change ordering type for each step (increasing/decreasing)
+      (setq keyOrderRequired (not keyOrderRequired))))) ; change ordering type for each step (according to key (e.g. increasing) / reverse to key (e.g. decreasing))
 
 (defun bubbleSort(inputArray &optional sortKey)
   (check-type inputArray array)

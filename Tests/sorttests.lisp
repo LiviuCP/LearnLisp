@@ -7,7 +7,7 @@
     (assert-true (equalp testArray #(1 6 2 4 3 9 5 8 0 7)))
 
     (setq testArray (make-array '(10) :initial-contents '(1 4 6 2 3 5 9 7 8 0)))
-    (counterSort testArray t)
+    (counterSort testArray t (lambda(a b)(let ((result))(setq result (<= a b))))) ; actually the lambda is not required here, default one is sufficient (added only for illustration purpose)
     (assert-true (equalp testArray #(4 1 6 2 5 3 9 7 8 0)))
 
     (setq testArray (make-array '(10) :initial-contents '(4 1 2 2 3 5 9 5 8 0)))
