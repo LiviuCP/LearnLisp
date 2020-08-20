@@ -33,6 +33,29 @@
      (when (not sortingPerformed) ; stop when no item swap performed along the iteration
        (return)))))
 
+(defun insertionSort(inputArray &optional sortKey)
+  (check-type inputArray array)
+  (dotimes (index (length inputArray))
+    (check-type (aref inputArray index) (or integer float rational)))
+  (if (not (null sortKey))
+      (check-type sortKey function)
+    (setq sortKey (lambda(a b)(let ((result))(setq result (<= a b))))))
+  (when (> (length inputArray) 0)
+    (loop for index from 1 to (- (length inputArray) 1)
+	  do
+	  (let ((elementToInsert index) (checkedIndex (- index 1)))
+	    (loop
+	     (when (< checkedIndex 0)
+	       (return))
+	     (if (not (funcall sortKey (aref inputArray checkedIndex) (aref inputArray elementToInsert)))
+		 (progn
+		   (let ((temp (aref inputArray checkedIndex)))
+		     (setf (aref inputArray checkedIndex) (aref inputArray elementToInsert))
+		     (setf (aref inputArray elementToInsert) temp))
+		   (setq elementToInsert checkedIndex))
+	       (return))
+	     (decf checkedIndex 1))))))
+
 (defun mergeSort(inputArray &optional sortKey)
   (defun doMergeSort(inputArray auxArray startIndex endIndex sortKey)
     (when (/= startIndex endIndex)
