@@ -64,16 +64,15 @@
   (assert-false (getPrimeFactorsForNumber 2))
   (assert-false (getPrimeFactorsForNumber 7))
 
-  (let ((primeFactors))
-    (setq primeFactors (getPrimeFactorsForNumber 6))
+  (let ((primeFactors (getPrimeFactorsForNumber 6)))
     (assert-true (= (gethash 2 primeFactors) 1)) ; assert-equal doesn't seem to work in these cases
-    (assert-true (= (gethash 3 primeFactors) 1))
+    (assert-true (= (gethash 3 primeFactors) 1)))
 
-    (setq primeFactors (getPrimeFactorsForNumber 384))
+  (let ((primeFactors (getPrimeFactorsForNumber 384)))
     (assert-true (= (gethash 2 primeFactors) 7))
-    (assert-true (= (gethash 3 primeFactors) 1))
+    (assert-true (= (gethash 3 primeFactors) 1)))
 
-    (setq primeFactors (getPrimeFactorsForNumber 2500))
+  (let ((primeFactors (getPrimeFactorsForNumber 2500)))
     (assert-true (= (gethash 2 primeFactors) 2))
     (assert-true (= (gethash 5 primeFactors) 4)))
 )
