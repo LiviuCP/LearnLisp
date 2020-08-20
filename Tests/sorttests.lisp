@@ -63,6 +63,38 @@
     (assert-true (equalp testArray #(1/4 -2 5/3 -2.0 4 9/4 2.5 -1 5 2.25)))
 ))
 
+(define-test test-shuffle-array
+  (let ((testArray #(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24))
+	(testArrayCopy #(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24)))
+    (shuffleArray testArray)
+    (assert-false (equalp testArray testArrayCopy))
+    (insertionSort testArray)
+    (assert-true (equalp testArray testArrayCopy)))
+
+  (let ((testArray #(25 23 22 22 15 13 12 12 12 8 7 5 3 3 3 3 -2 -4 -8 -9 -9 -11 -11 -14 -15))
+	(testArrayCopy #(25 23 22 22 15 13 12 12 12 8 7 5 3 3 3 3 -2 -4 -8 -9 -9 -11 -11 -14 -15)))
+    (shuffleArray testArray)
+    (assert-false (equalp testArray testArrayCopy))
+    (insertionSort testArray (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (assert-true (equalp testArray testArrayCopy)))
+
+  (let ((testArray #(0 -1 2 4 3 9 5 5 2 8 -7 -5 3 2 4 12 8 7 7 6 4 5 10 -2 -2))
+	(testArrayCopy #(0 -1 2 4 3 9 5 5 2 8 -7 -5 3 2 4 12 8 7 7 6 4 5 10 -2 -2)))
+    (shuffleArray testArray)
+    (assert-false (equalp testArray testArrayCopy))
+    (insertionSort testArray)
+    (insertionSort testArrayCopy)
+    (assert-true (equalp testArray testArrayCopy)))
+
+  (let ((testArray #(5)))
+    (shuffleArray testArray)
+    (assert-true (equalp testArray #(5))))
+
+  (let ((testArray #(5 -2)))
+    (shuffleArray testArray)
+    (assert-true (equalp testArray #(5 -2))))
+)
+
 (define-test test-bubble-sort
   (setq testArray (make-array '(10) :initial-contents '(2 -1 3 0 4 2 5 5 -7 8)))
   (bubbleSort testArray)
