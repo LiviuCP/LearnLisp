@@ -73,17 +73,18 @@
       (setq left 0))
     (when (null right)
       (setq right (length inputArray)))
-    (loop
-     (let ((sortingPerformed))
-       (loop for index from left to (- right 2)
-	     do
-	     (when (not (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1))))
-	       (let ((temp (aref inputArray index)))
-		 (setf (aref inputArray index) (aref inputArray (+ index 1)))
-		 (setf (aref inputArray (+ index 1)) temp)
-		 (setq sortingPerformed t))))
-       (when (not sortingPerformed) ; stop when no item swap performed along the iteration
-	 (return))))))
+    (when (> (- right left) 1) ; there should be minimum 2 elements to be sorted
+      (loop
+       (let ((sortingPerformed))
+	 (loop for index from left to (- right 2)
+	       do
+	       (when (not (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1))))
+		 (let ((temp (aref inputArray index)))
+		   (setf (aref inputArray index) (aref inputArray (+ index 1)))
+		   (setf (aref inputArray (+ index 1)) temp)
+		   (setq sortingPerformed t))))
+	 (when (not sortingPerformed) ; stop when no item swap performed along the iteration
+	   (return)))))))
 
 (defun insertionSort(inputArray &key sortKey left right)
   (check-type inputArray array)
