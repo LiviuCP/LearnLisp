@@ -1,7 +1,6 @@
 (load "../Libs/parse.lisp")
 
 (defconstant epsilon1 (expt 10 -6)) ; used for integer or decimal arguments
-(defconstant epsilon2 (expt 10 -4)) ; used for fraction arguments (higher rounding errors at the moment)
 
 (define-test test-convert-to-integer
   (assert-true (= (convertStringToInt "0") 0))
@@ -11,7 +10,8 @@
   (assert-true (= (convertStringToInt "0014") 14))
   (assert-true (= (convertStringToInt "-0015") -15))
   (assert-true (= (convertStringToInt "-0023456000078") -23456000078))
-  (assert-true (= (convertStringToInt "0000444455967") 444455967)))
+  (assert-true (= (convertStringToInt "0000444455967") 444455967))
+)
 
 (define-test test-cannot-convert-to-integer
   (assert-false (convertStringToInt "a"))
@@ -22,7 +22,8 @@
   (assert-false (convertStringToInt " 1"))
   (assert-false (convertStringToInt "-2 "))
   (assert-false (convertStringToInt "1+2"))
-  (assert-false (convertStringToInt "1-23")))
+  (assert-false (convertStringToInt "1-23"))
+)
 
 (define-test test-convert-to-float
   (assert-true (<= (abs (- 2.345678000001 (convertStringToFloat "2.345678000001"))) epsilon1))
@@ -36,11 +37,16 @@
   (assert-true (<= (abs (- 11.0 (convertStringToFloat "11.000"))) epsilon1))
   (assert-true (<= (abs (- 1.2354 (convertStringToFloat "01.2354"))) epsilon1))
   (assert-true (<= (abs (- -2.4501 (convertStringToFloat "-02.450100"))) epsilon1))
-  (assert-true (<= (abs (- 0.4 (convertStringToFloat "2/5"))) epsilon1))
-  (assert-true (<= (abs (- -0.3333 (convertStringToFloat "1/-3"))) epsilon2))
-  (assert-true (<= (abs (- -0.6666 (convertStringToFloat "-2/3"))) epsilon2))
-  (assert-true (<= (abs (- 0.85714 (convertStringToFloat "-6/-7"))) epsilon2))
-  (assert-true (<= (abs (- 1.4 (convertStringToFloat "28/20"))) epsilon2)))
+  (assert-true (<= (abs (- 4.0 (convertStringToFloat "8/2"))) epsilon1))
+  (assert-true (<= (abs (- -5.0 (convertStringToFloat "10/-2"))) epsilon1))
+  (assert-true (<= (abs (- -3.0 (convertStringToFloat "-9/3"))) epsilon1))
+  (assert-true (<= (abs (- 7.0 (convertStringToFloat "-49/-7"))) epsilon1))
+  (assert-true (= 2/5 (convertStringToFloat "2/5")))
+  (assert-true (= -1/3 (convertStringToFloat "1/-3")))
+  (assert-true (= -2/3 (convertStringToFloat "-2/3")))
+  (assert-true (= 6/7 (convertStringToFloat "-6/-7")))
+  (assert-true (= 7/5 (convertStringToFloat "28/20")))
+)
 
 (define-test test-cannot-convert-to-float
   (assert-false (convertStringToFloat "a.5"))
@@ -67,4 +73,5 @@
   (assert-false (convertStringToFloat "-2/5.6"))
   (assert-false (convertStringToFloat "3/5+6"))
   (assert-false (convertStringToFloat "3/50/6"))
-  (assert-false (convertStringToFloat "/38")))
+  (assert-false (convertStringToFloat "/38"))
+)

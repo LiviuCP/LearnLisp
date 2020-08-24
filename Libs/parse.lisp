@@ -114,10 +114,12 @@
 	(if (/= commaPosition -1) ; get right side number (pure decimal part / fraction denominator)
 	    (setq result (getDecimalFromString rightNumberString))
 	  (setq result (getIntegerFromString rightNumberString))))
-      (let ((intPart (getIntegerFromString leftNumberString)))
-	(if (/= slashPosition -1) ; get integer part or numerator
-	    (setq result (/ (* 1.0 intPart) result)) ; numerator
-	  (setq result (+ result intPart)))) ; integer part
-      (if (not (null isNegative)) ; finally add the negative sign (if applicable)
-	  (setq result (- 0 result))))
+      (let ((intPart (getIntegerFromString leftNumberString))) ; get integer part or numerator and combine it to partial outcome to obtain the end result
+	(if (/= slashPosition -1)
+	    (if (= 0 (rem intPart result))
+		(setq result (* 1.0 (/ intPart result))) ; integer fraction
+	      (setq result (/ intPart result))) ; non-integer fraction, store as rational number
+	  (setq result (+ result intPart)))) ; integer part for integer/decimal string
+      (when (not (null isNegative)) ; finally add the negative sign (if applicable)
+	(setq result (- 0 result))))
     (return-from convertStringToFloat result)))
