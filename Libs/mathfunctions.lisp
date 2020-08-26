@@ -23,9 +23,7 @@
 	  (setq gcdOnePrime primeNr))
       (return-from getGcdOnePrimeNumber gcdOnePrime)))
   ; simplify by using absolute values for retrieving l.c.m.
-  (let ((gcd 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst) (primeFactorsSecond))
-    (setq primeFactorsFirst (getPrimeFactorsForNumber absFirst))
-    (setq primeFactorsSecond (getPrimeFactorsForNumber absSecond))
+  (let* ((gcd 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst (getPrimeFactorsForNumber absFirst)) (primeFactorsSecond (getPrimeFactorsForNumber absSecond)))
     (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
 	   (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the minimum exponent to calculate g.c.d.
 		 do (unless (null (gethash primeFactor primeFactorsSecond))
