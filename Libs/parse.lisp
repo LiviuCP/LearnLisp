@@ -24,7 +24,7 @@
 	     (if (not (or (member (aref str 0) digits) (char-equal (aref str 0) #\-)))
 		 (setq isInteger nil)
 	       (loop for index from 1 to (- (length str) 1)
-		     do (when (not (member (aref str index) digits))
+		     do (unless (member (aref str index) digits)
 			  (setq isInteger nil)
 			  (return))))))
       (return-from isStringConvertibleToInteger isInteger)))
@@ -110,7 +110,7 @@
     (when (isStringConvertibleToFloat str)
       ; do actual conversion to a float value
       (setq result 0.0)
-      (when (not (null rightNumberString))
+      (unless (null rightNumberString)
 	(if (/= commaPosition -1) ; get right side number (pure decimal part / fraction denominator)
 	    (setq result (getDecimalFromString rightNumberString))
 	  (setq result (getIntegerFromString rightNumberString))))
@@ -120,6 +120,6 @@
 		(setq result (* 1.0 (/ intPart result))) ; integer fraction
 	      (setq result (/ intPart result))) ; non-integer fraction, store as rational number
 	  (setq result (+ result intPart)))) ; integer part for integer/decimal string
-      (when (not (null isNegative)) ; finally add the negative sign (if applicable)
+      (unless (null isNegative) ; finally add the negative sign (if applicable)
 	(setq result (- 0 result))))
     (return-from convertStringToFloat result)))
