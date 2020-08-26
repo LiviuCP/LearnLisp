@@ -6,7 +6,7 @@
   (defconstant outputFile "/tmp/primes.txt")
   (let ((left) (right))
     (setq left (requestIntInputWithCondition "Enter the left interval margin: " #'(lambda(val)(let ((isGreater)) (setq isGreater (> val 1)))) "The number should be greater than 1. Please try again"))
-    (when (not (null left))
+    (unless (null left)
       (setq right (requestIntInputWithCondition "Enter the right interval margin: " #'(lambda(val)(let ((isGreater)) (setq isGreater (> val 1)))) "The number should be greater than 1. Please try again")))
     (cond ((null right) (write-line "You quit"))
 	  (t (let ((primes (list)))
