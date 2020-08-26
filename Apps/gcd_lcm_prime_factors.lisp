@@ -14,7 +14,7 @@
       (return-from getOrderedPrimeFactorsList primeFactorsList)))
   (let ((first) (second)) ; declare the variables here for a better overview
     (setq first (requestIntInputWithCondition "Enter the first number: " #'(lambda(val)(setq isDifferent (/= val 0))) "The number should be different from 0. Please try again"))
-    (when (not (null first))
+    (unless (null first)
       (setq second (requestIntInputWithCondition "Enter the second number: " #'(lambda(val)(setq isDifferent (/= val 0))) "The number should be different from 0. Please try again")))
     (if (not (null second))
 	(let ((firstNrPrimeFactors (getOrderedPrimeFactorsList first)) (secondNrPrimeFactors (getOrderedPrimeFactorsList second)) (gcd (gCommonDivPrimeFactors first second)) (lcm (lCommonMulPrimeFactors first second)))
