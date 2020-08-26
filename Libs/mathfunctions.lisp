@@ -5,11 +5,11 @@
   (check-type first integer)
   (check-type second integer)
   (assert (and (/= first 0) (/= second 0)) (first second) "Both arguments should be different from 0")
-  (let ((result 1) (divided (abs first)) (divider (abs second)) (remainder)) ; ensure the g.c.d. is positive to avoid any confusion
+  (let ((result 1) (divided (abs first)) (divider (abs second))) ; ensure the g.c.d. is positive to avoid any confusion
     (loop
-     (setq remainder (rem divided divider))
-     (cond ((= remainder 0)(setq result divider)(return))
-	   (t (setq divided divider) (setq divider remainder))))
+     (let ((remainder (rem divided divider)))
+       (cond ((= remainder 0)(setq result divider)(return))
+	     (t (setq divided divider) (setq divider remainder)))))
     (return-from gCommonDiv result)))
 
 ; calculates the greatest common divisor by using prime factors decomposition
