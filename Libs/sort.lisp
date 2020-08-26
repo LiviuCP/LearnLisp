@@ -126,12 +126,9 @@
 (defun mergeSort(inputArray &key sortKey left right)
   (defun doMergeSort(inputArray auxArray startIndex endIndex sortKey)
     (when (/= startIndex endIndex)
-      (let ((midIndex (floor (+ startIndex endIndex) 2)) (firstIndex) (secondIndex) (writeIndex))
+      (let* ((midIndex (floor (+ startIndex endIndex) 2)) (firstIndex startIndex) (secondIndex (+ midIndex 1)) (writeIndex startIndex))
 	(doMergeSort inputArray auxArray startIndex midIndex sortKey)
 	(doMergeSort inputArray auxArray (+ midIndex 1) endIndex sortKey)
-	(setq firstIndex startIndex)
-	(setq secondIndex  (+ midIndex 1))
-	(setq writeIndex startIndex)
 	(loop
 	 (if (or (> firstIndex midIndex) (> secondIndex endIndex))
 	     (return))
