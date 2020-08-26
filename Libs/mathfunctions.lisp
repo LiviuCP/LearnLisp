@@ -28,7 +28,7 @@
     (setq primeFactorsSecond (getPrimeFactorsForNumber absSecond))
     (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
 	   (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the minimum exponent to calculate g.c.d.
-		 do (when (not (null (gethash primeFactor primeFactorsSecond)))
+		 do (unless (null (gethash primeFactor primeFactorsSecond))
 		      (let ((firstExponent (gethash primeFactor primeFactorsFirst)) (secondExponent (gethash primeFactor primeFactorsSecond)))
 			(setq gcd (* gcd (expt primeFactor (min firstExponent secondExponent))))))))
 	  ((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq gcd (getGcdOnePrimeNumber absSecond absFirst))) ; second number is prime, no need to use prime factors
@@ -55,7 +55,7 @@
 	     (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the maximum exponent to calculate l.c.m.
 		   do
 		   (let ((resultingExponent (gethash primeFactor primeFactorsFirst)))
-		     (when (not (null (gethash primeFactor primeFactorsSecond)))
+		     (unless (null (gethash primeFactor primeFactorsSecond))
 		       (setq resultingExponent (max resultingExponent (gethash primeFactor primeFactorsSecond))))
 		     (setf (gethash primeFactor consolidatedPrimeFactors) resultingExponent)))
 	     (loop for primeFactor being each hash-key of consolidatedPrimeFactors ; calculate l.c.m. based on consolidated prime factors
@@ -77,9 +77,9 @@
 	(setq primesList (cons (aref primesArray (- (- arrayLength 1) index)) primesList)))
       (return-from convertPrimesArrayToList primesList)))
   (let ((result) (numberToDivide (abs number))) ; key = prime number, value = number of occurrences within the numberToDivide (power exponent)
-    (when (not (= numberToDivide 1))
+    (unless (= numberToDivide 1)
       (let ((primesUntilNumber (convertPrimesArrayToList (getPrimeNumbers numberToDivide))))
-	(when (not (member numberToDivide primesUntilNumber))
+	(unless (member numberToDivide primesUntilNumber)
 	  (let ((primeFactors (make-hash-table)))
 	    (loop for prime in primesUntilNumber
 		  do (when (= (rem numberToDivide prime) 0)
@@ -100,7 +100,7 @@
 (defun getPrimeNumbers(right &optional left) ; the search interval has only one mandatory defined margin, namely the right one (left is optional, if not defined than it is presumed 2 - first relevant prime nr)
   (check-type right integer)
   (assert (> right 1) (right) "The given threshold is invalid")
-  (when (not (null left))
+  (unless (null left)
     (check-type left integer)
     (assert (and (> left 1) (> right left)) (left right) "The given interval is invalid"))
   ; initial allocation of 10% of all numbers belonging to interval (adjust if required), min 2 elements (2, 3) required
@@ -125,7 +125,7 @@
     (when (= right 2)                                    ; corner-case, user enters only number 2 as interval (clip everything else)
       (vector-pop identifiedPrimes))
     (let ((leftIndex 0))
-      (when (not (null left))                              ; adjust array to contain only numbers from interval
+      (unless (null left)                              ; adjust array to contain only numbers from interval
 	(dotimes (index (fill-pointer identifiedPrimes))
 	  (if (< (aref identifiedPrimes index) left)
 	      (incf leftIndex 1)
@@ -138,7 +138,7 @@
 (defun getFibonacciMatrix(order &optional initialValues) ; initialValues should be a list of four integer elements that are (in this order): (0, 0), (0, 1), (1, 0), (1, 1)
   (check-type order integer)
   (assert (> order 0) (order) "The matrix order is invalid")
-  (when (not (null initialValues))
+  (unless (null initialValues)
     (check-type initialValues list)
     (assert (>= (length initialValues) 4) (initialValues) "The initial values list contains less than the required four elements")
     (dotimes (index 4)
