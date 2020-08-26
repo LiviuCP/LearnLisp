@@ -29,7 +29,7 @@
 			  (return))))))
       (return-from isStringConvertibleToInteger isInteger)))
   (check-type str string)
-  (let ((intResult nil))
+  (let ((intResult))
     (when (isStringConvertibleToInteger str)
       (setq intResult 0)
       (let ((startPos 0) (charToNumberHash (getDigitCharToNumberHash)))
