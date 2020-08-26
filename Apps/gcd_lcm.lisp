@@ -5,7 +5,7 @@
 (defun main()
   (let ((first) (second)) ; declare both variables here to have a better overview
     (setq first (requestIntInputWithCondition "Enter the first number: " #'(lambda(val)(setq isDifferent (/= val 0))) "The number should be different from 0. Please try again"))
-    (when (not (null first))
+    (unless (null first)
       (setq second (requestIntInputWithCondition "Enter the second number: " #'(lambda(val)(setq isDifferent (/= val 0))) "The number should be different from 0. Please try again")))
     (if (not (null second))
 	(let ((gcd (gCommonDiv first second)) (lcm)) ; we will declare l.c.m. here to have a better overview
