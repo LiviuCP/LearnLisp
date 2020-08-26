@@ -45,9 +45,7 @@
 	  (setq lcmOnePrime (abs notPrimeNr))
 	(setq lcmOnePrime (* primeNr notPrimeNr)))
     (return-from getLcmOnePrimeNumber lcmOnePrime)))
-  (let ((lcm 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst) (primeFactorsSecond))
-    (setq primeFactorsFirst (getPrimeFactorsForNumber absFirst))
-    (setq primeFactorsSecond (getPrimeFactorsForNumber absSecond))
+  (let* ((lcm 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst (getPrimeFactorsForNumber absFirst)) (primeFactorsSecond (getPrimeFactorsForNumber absSecond)))
     (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
 	   (let ((consolidatedPrimeFactors primeFactorsSecond))
 	     (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the maximum exponent to calculate l.c.m.
