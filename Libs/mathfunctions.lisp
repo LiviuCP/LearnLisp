@@ -100,16 +100,13 @@
     (check-type left integer)
     (assert (and (> left 1) (> right left)) (left right) "The given interval is invalid"))
   ; initial allocation of 10% of all numbers belonging to interval (adjust if required), min 2 elements (2, 3) required
-  (let ((initialPrimesArrayCapacity (+ (floor right 10) 2)) (identifiedPrimes) (identifiedPrimesFinal))
-    (setq identifiedPrimes (make-array `(,initialPrimesArrayCapacity) :fill-pointer 2 :adjustable t))
+  (let* ((initialPrimesArrayCapacity (+ (floor right 10) 2)) (identifiedPrimes (make-array `(,initialPrimesArrayCapacity) :fill-pointer 2 :adjustable t)) (identifiedPrimesFinal))
     (setf (aref identifiedPrimes 0) 2)                         ; seed the list of prime numbers (first number not to be used for checking as it is the only even one)
     (setf (aref identifiedPrimes 1) 3)
     (do ((currentNrToCheck 5 (+ currentNrToCheck 2)))          ; only check odd numbers for prime-ness
 	((> currentNrToCheck right))
 	(dotimes (index (- (fill-pointer identifiedPrimes) 1)) ; exclude 2 from primes number check base
-	  (let ((currentPrimeNr (aref identifiedPrimes (+ index 1))) (quotient) (remainder))
-	    (setq quotient (floor currentNrToCheck currentPrimeNr))
-	    (setq remainder (rem currentNrToCheck currentPrimeNr))
+	  (let* ((currentPrimeNr (aref identifiedPrimes (+ index 1))) (quotient (floor currentNrToCheck currentPrimeNr)) (remainder (rem currentNrToCheck currentPrimeNr)))
 	    (when (= 0 remainder)
 	      (return))
 	    (when (< quotient currentPrimeNr)                    ; add found prime to list of already existing ones (use it in the next iterations for finding new primes)
