@@ -1,21 +1,22 @@
-(defconstant digits (list #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9))
+(defconstant digits (list #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9) "We use this constant for mapping number characters to actual digits.")
 
 (defun getDigitCharToNumberHash()
-    (let ((digitHash (make-hash-table)))
-      (setf (gethash #\0 digitHash) 0)
-      (setf (gethash #\1 digitHash) 1)
-      (setf (gethash #\2 digitHash) 2)
-      (setf (gethash #\3 digitHash) 3)
-      (setf (gethash #\4 digitHash) 4)
-      (setf (gethash #\5 digitHash) 5)
-      (setf (gethash #\6 digitHash) 6)
-      (setf (gethash #\7 digitHash) 7)
-      (setf (gethash #\8 digitHash) 8)
-      (setf (gethash #\9 digitHash) 9)
-      (return-from getDigitCharToNumberHash digitHash)))
+  "This hash table is used for mapping digit characters to actual numeric digits when converting the string to a number."
+  (let ((digitHash (make-hash-table)))
+    (setf (gethash #\0 digitHash) 0)
+    (setf (gethash #\1 digitHash) 1)
+    (setf (gethash #\2 digitHash) 2)
+    (setf (gethash #\3 digitHash) 3)
+    (setf (gethash #\4 digitHash) 4)
+    (setf (gethash #\5 digitHash) 5)
+    (setf (gethash #\6 digitHash) 6)
+    (setf (gethash #\7 digitHash) 7)
+    (setf (gethash #\8 digitHash) 8)
+    (setf (gethash #\9 digitHash) 9)
+    (return-from getDigitCharToNumberHash digitHash)))
 
-; own implementation of parse-integer
 (defun convertStringToInt(str)
+  "This function is an alternative to the parse-integer function."
   (defun isStringConvertibleToInteger(str)
     (let ((isInteger t))
       (cond ((= (length str) 0) (setq isInteger nil))                                             ; case 1: no characters
@@ -45,8 +46,8 @@
     (return-from convertStringToInt intResult)))
 
 (defun convertStringToFloat(str)
-  ; state-machine with states: 0 - Init, 1 - SignAdded, 2 - LeftDigitsAdded, 3 - CommaAdded, 4 - RightDigitsAdded, 5 - Invalid (possibly to be revised as use of "magic numbers" is not the best solution)
-  ; for fraction we have the additional states: 6 - SlashAdded, 7 - SecondSignAdded
+  "This function parses a string to a float or fraction (depending on string format). It uses a state machine with following states:
+  0 - Init, 1 - SignAdded, 2 - LeftDigitsAdded, 3 - CommaAdded, 4 - RightDigitsAdded, 5 - Invalid, 6 - SlashAdded, 7 - SecondSignAdded (last two states for fraction strings only)."
   (check-type str string)
   (let ((commaPosition -1) (slashPosition -1) (isNegative) (charToNumberHash (getDigitCharToNumberHash)) (leftNumberString) (rightNumberString) (result))
     (defun isStringConvertibleToFloat(str)

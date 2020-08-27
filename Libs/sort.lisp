@@ -1,6 +1,10 @@
-; performs a simple "shuffle" of the array by ordering the elements: a[0] <= a[1] >= a[2] <= a[3] ... or a[0] >= a[1] <= a[2] >= a[3] ...
-; sortKey is the ordering criteria (e.g. a<=b), reverseKey is the ordering criteria of first 2 elements (according (nil) or reversed (t) to sortKey); criteria is that continually reversed for each step
+#| This file contains sorting algorithm implementations and other shuffle and statistics functions.
+All sorting algorithms have the possibility to do sub-sequence sorting in arrays, e.g. sort elements with indexes 2 through 5 from a 10 elements array. |#
+
+
+;;; sortKey is the ordering criteria (e.g. a<=b), reverseKey is the ordering criteria of first 2 elements (according (nil) or reversed (t) to sortKey); criteria is that continually reversed for each step
 (defun counterSort(inputArray &optional reverseKey sortKey) 
+  "This function performs a simple \"shuffle\" of the array by ordering the elements: a[0] <= a[1] >= a[2] <= a[3] ... or a[0] >= a[1] <= a[2] >= a[3] ..."
   (check-type inputArray array)
   (dotimes (index (length inputArray))
     (check-type (aref inputArray index) (or integer float rational)))
@@ -13,8 +17,8 @@
 	(swapArrayItems inputArray index (+ index 1)))
       (setq keyOrderRequired (not keyOrderRequired))))) ; change ordering type for each step (according to key (e.g. increasing) / reverse to key (e.g. decreasing))
 
-; performs more complex mixing (shuffling) of array elements by swapping elements from right half of the array with randomly chosen elements from left half
 (defun shuffleArray(inputArray)
+  "This function performs more complex mixing (shuffling) of array elements by swapping elements from right half of the array with randomly chosen elements from left half."
   (check-type inputArray array)
   (dotimes (index (length inputArray))
     (check-type (aref inputArray index) (or integer float rational)))
@@ -44,6 +48,7 @@
 	  (swapArrayItems inputArray index (+ index 1))))))
 
 (defun bubbleSort(inputArray &key sortKey left right)
+  "This function implements the simplest (brute-force) algorithm: bubble sort."
   (check-type inputArray array)
   (unless (null left)
     (check-type left integer)
@@ -75,6 +80,7 @@
 	   (return)))))))
 
 (defun insertionSort(inputArray &key sortKey left right)
+  "This function implements the insertion sort algorithm."
   (check-type inputArray array)
   (unless (null left)
     (check-type left integer)
@@ -110,6 +116,7 @@
 		   (decf checkedIndex 1)))))))))
 
 (defun mergeSort(inputArray &key sortKey left right)
+  "This function implements the merge sort algorithm."
   (defun doMergeSort(inputArray auxArray startIndex endIndex sortKey)
     (when (/= startIndex endIndex)
       (let* ((midIndex (floor (+ startIndex endIndex) 2)) (firstIndex startIndex) (secondIndex (+ midIndex 1)) (writeIndex startIndex))
@@ -164,6 +171,7 @@
 	  (doMergeSort sequenceToSort auxArray 0 (- sortingLength 1) sortKey))))))
 
 (defun quickSort (inputArray &key sortkey left right)
+  "This function implements the quick sort algorithm. The elements are \"shuffled\" prior to sorting so quadratic time scenarios are avoided as much as possible."
   (defun doQuickSort(inputArray beginIndex endIndex sortKey)
     (when (/= beginIndex endIndex)
       (if (= beginIndex (- endIndex 1))
@@ -216,6 +224,7 @@
 	  (doQuickSort sequenceToSort 0 (- sortingLength 1) sortKey))))))
 
 (defun heapSort (inputArray &key sortKey left right)
+  "This function implements the heap sort algorithm. Heap build is performed prior to actual sorting."
   (defun buildHeap (inputArray sortKey)
     (dotimes (index (length inputArray))
       (let ((checkedElementIndex index))
@@ -277,6 +286,7 @@
 			(t (return)))))))))))))
 
 (defun getSortedGroupsInfo(inputArray &optional sortKey)
+  "This function provides specific statistics regarding the elements of an array (e.g. number of sub-sequences sorted by key)."
   (defun getMinNrOfSortedElements(currentMinNr providedMinNr)
     (let ((newMinNr))
       (if (= currentMinNr 0)

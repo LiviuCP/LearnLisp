@@ -1,4 +1,5 @@
 (defun requestIntInput(message)
+  "This function is used for taking over pure integer user input. It will exit only if the user aborts data entry or a correct integer has been entered as string."
   (check-type message string)
   (let ((result))
     (loop
@@ -14,6 +15,7 @@
 
 ; condition should be a lambda function that contains a single param to which the converted value (result) is passed as arg, e.g. #'(lambda(val)(setq res (> val 0)))
 (defun requestIntInputWithCondition(message condition conditionErrorMessage)
+  "This function is used for taking over integer user input that satisfies a specific condition. Exit criteria is user abort or entering an integer that satisfies the provided condition."
   (check-type message string)
   (check-type condition function)
   (check-type conditionErrorMessage string)

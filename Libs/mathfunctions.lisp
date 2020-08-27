@@ -1,7 +1,7 @@
-(defconstant firstRelevantPrime 2)
+(defconstant firstRelevantPrime 2 "First useful prime number (1 is not relevant).")
 
-; calculates the greatest common divisor by remainder method
 (defun gCommonDiv (first second)
+  "This function retrieves the greatest common divisor of two integer numbers by using the remainder method."
   (check-type first integer)
   (check-type second integer)
   (assert (and (/= first 0) (/= second 0)) (first second) "Both arguments should be different from 0")
@@ -12,8 +12,8 @@
 	     (t (setq divided divider) (setq divider remainder)))))
     (return-from gCommonDiv result)))
 
-; calculates the greatest common divisor by using prime factors decomposition
 (defun gCommonDivPrimeFactors(first second)
+  "This function retrieves the greatest common divisor of two integer numbers by using the prime factors decomposition."
   (check-type first integer)
   (check-type second integer)
   (assert (and (/= first 0) (/= second 0)) (first second) "Both arguments should be different from 0")
@@ -34,8 +34,8 @@
 	  ((= absFirst absSecond) (setq gcd absFirst)))
     (return-from gCommonDivPrimeFactors gcd)))
 
-; calculates the least common multiple by using prime factors decomposition
 (defun lCommonMulPrimeFactors(first second)
+  "This function retrieves the least common multiple of two integer numbers by using the prime factors decomposition."
   (check-type first integer)
   (check-type second integer)
   (assert (and (/= first 0) (/= second 0)) (first second) "Both arguments should be different from 0")
@@ -63,8 +63,8 @@
 	  (t (setq lcm (* absFirst absSecond))))
     (return-from lCommonMulPrimeFactors lcm)))
 
-; retrieve prime factors for a number that is not prime
 (defun getPrimeFactorsForNumber(number)
+  "This function retrieves prime factors for an integer number."
   (check-type number integer)
   (assert (/= number 0) (number) "The argument should be different from 0")
   (defun convertPrimesArrayToList(primesArray)
@@ -92,8 +92,8 @@
 	    (setq result primeFactors)))))
     (return-from getPrimeFactorsForNumber result)))
 
-; get prime numbers in a specific interval (default [2; right])
 (defun getPrimeNumbers(right &optional left) ; the search interval has only one mandatory defined margin, namely the right one (left is optional, if not defined than it is presumed 2 - first relevant prime nr)
+  "This function retrieves prime numbers in a specific interval (default is [2; right])."
   (check-type right integer)
   (assert (> right 1) (right) "The given threshold is invalid")
   (unless (null left)
@@ -127,8 +127,8 @@
 	(setq identifiedPrimesFinal (make-array `(,finalNrOfElements) :displaced-to identifiedPrimes :displaced-index-offset leftIndex))))
     (return-from getPrimeNumbers identifiedPrimesFinal)))
 
-; calculate a Fibonacci-like matrix: on each row, column and diagonal each number is the sum of the previous two numbers (initial numbers can be provided by user)
 (defun getFibonacciMatrix(order &optional initialValues) ; initialValues should be a list of four integer elements that are (in this order): (0, 0), (0, 1), (1, 0), (1, 1)
+  "This function calculates a Fibonacci-like matrix; on each row, column and diagonal each number is the sum of the previous two numbers (initial numbers can be provided by user)."
   (check-type order integer)
   (assert (> order 0) (order) "The matrix order is invalid")
   (unless (null initialValues)
