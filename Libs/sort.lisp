@@ -10,9 +10,7 @@
   (let ((keyOrderRequired (not reverseKey)))
     (dotimes (index (- (length inputArray) 1))
       (when (or (and keyOrderRequired (not (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1))))) (and (not keyOrderRequired) (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1)))))
-	  (let ((temp (aref inputArray index)))
-	    (setf (aref inputArray index) (aref inputArray (+ index 1)))
-	    (setf (aref inputArray (+ index 1)) temp)))
+	(swapArrayItems inputArray index (+ index 1)))
       (setq keyOrderRequired (not keyOrderRequired))))) ; change ordering type for each step (according to key (e.g. increasing) / reverse to key (e.g. decreasing))
 
 ; performs more complex mixing (shuffling) of array elements by swapping elements from right half of the array with randomly chosen elements from left half
@@ -27,9 +25,7 @@
 	    do (let ((randomIndex (random leftIntervalEnd)))
 		 (cond ((null (aref vacancies randomIndex))
 			(setf (aref vacancies randomIndex) t)
-			(let ((temp (aref inputArray index)))
-			  (setf (aref inputArray index) (aref inputArray randomIndex))
-			  (setf (aref inputArray randomIndex) temp)))
+			(swapArrayItems inputArray index randomIndex))
 		       (t
 			(setq duplicates (cons index duplicates)))))) ; if randomly chosen element from left had already been swapped: put the element from the right side into a separate list (reverse order)
       (let ((currentVacancyIndex 0))
@@ -37,9 +33,7 @@
 	(dolist (element duplicates)
 	  (loop
 	   (when (null (aref vacancies currentVacancyIndex))
-	     (let ((temp (aref inputArray currentVacancyIndex)))
-		   (setf (aref inputArray currentVacancyIndex) (aref inputArray element))
-		   (setf (aref inputArray element) temp))
+	     (swapArrayItems inputArray currentVacancyIndex element)
 	     (setf (aref vacancies currentVacancyIndex) t) ; not really needed by "better safe than sorry"
 	     (incf currentVacancyIndex 1)
 	     (return))
@@ -47,9 +41,7 @@
       ; finally swap elements pairwise to ensure a better mix (controversial, to be checked further)
       (do ((index 0 (incf index 2)))
 	  ((>= index (- (length inputArray) 1)))
-	  (let ((temp (aref inputArray index)))
-		(setf (aref inputArray index) (aref inputArray (+ index 1)))
-		(setf (aref inputArray (+ index 1)) temp))))))
+	  (swapArrayItems inputArray index (+ index 1))))))
 
 (defun bubbleSort(inputArray &key sortKey left right)
   (check-type inputArray array)
@@ -77,10 +69,8 @@
 	 (loop for index from left to (- right 2)
 	       do
 	       (unless (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1)))
-		 (let ((temp (aref inputArray index)))
-		   (setf (aref inputArray index) (aref inputArray (+ index 1)))
-		   (setf (aref inputArray (+ index 1)) temp)
-		   (setq sortingPerformed t))))
+		 (swapArrayItems inputArray index (+ index 1))
+		 (setq sortingPerformed t)))
 	 (unless sortingPerformed ; stop when no item swap performed along the iteration
 	   (return)))))))
 
@@ -114,10 +104,8 @@
 		   (when (< checkedIndex 0)
 		     (return))
 		   (cond ((not (funcall sortKey (aref sequenceToSort checkedIndex) (aref sequenceToSort elementToInsert)))
-			 (let ((temp (aref sequenceToSort checkedIndex)))
-			   (setf (aref sequenceToSort checkedIndex) (aref sequenceToSort elementToInsert))
-			   (setf (aref sequenceToSort elementToInsert) temp))
-			 (setq elementToInsert checkedIndex))
+			  (swapArrayItems sequenceToSort checkedIndex elementToInsert)
+			  (setq elementToInsert checkedIndex))
 			 (t (return)))
 		   (decf checkedIndex 1)))))))))
 
@@ -180,9 +168,7 @@
     (when (/= beginIndex endIndex)
       (if (= beginIndex (- endIndex 1))
 	  (unless (funcall sortKey (aref inputArray beginIndex) (aref inputArray endIndex))
-	    (let ((temp (aref inputArray beginIndex)))
-	      (setf (aref inputArray beginIndex) (aref inputArray endIndex))
-	      (setf (aref inputArray endIndex) temp)))
+	    (swapArrayItems inputArray beginIndex endIndex))
 	(progn
 	  (let ((pivot (aref inputArray beginIndex)) (leftIndex (+ beginIndex 1)) (rightIndex endIndex))
 	    (loop
@@ -197,14 +183,10 @@
 		(return))
 	      (decf rightIndex 1))
 	     (if (< leftIndex rightIndex)
-		 (let ((temp (aref inputArray leftIndex)))
-		   (setf (aref inputArray leftIndex) (aref inputArray rightIndex))
-		   (setf (aref inputArray rightIndex) temp))
+		 (swapArrayItems inputArray leftIndex rightIndex)
 	       (return)))
 	    (when (> rightIndex beginIndex)
-	      (let ((temp (aref inputArray beginIndex)))
-		(setf (aref inputArray beginIndex) (aref inputArray rightIndex))
-		(setf (aref inputArray rightIndex) temp))
+	      (swapArrayItems inputArray beginIndex rightIndex)
 	      (doQuickSort inputArray beginIndex (- rightIndex 1) sortKey))
 	    (when (< rightIndex endIndex)
 	      (doQuickSort inputArray (+ rightIndex 1) endIndex sortKey)))))))
@@ -243,9 +225,7 @@
 	 (let ((parentElementIndex (floor (- checkedElementIndex 1) 2)))
 	   (if (not (funcall sortKey (aref inputArray checkedElementIndex) (aref inputArray parentElementIndex)))
 	       (progn
-		 (let ((temp (aref inputArray parentElementIndex)))
-		   (setf (aref inputArray parentElementIndex) (aref inputArray checkedElementIndex))
-		   (setf (aref inputArray checkedElementIndex) temp))
+		 (swapArrayItems inputArray parentElementIndex checkedElementIndex)
 		 (setq checkedElementIndex parentElementIndex))
 	     (return)))))))
   (check-type inputArray array)
@@ -275,9 +255,7 @@
 	    (loop
 	     (when (<= currentToSortIndex 0)
 	       (return))
-	     (let ((temp (aref sequenceToSort 0)))
-	       (setf (aref sequenceToSort 0) (aref sequenceToSort currentToSortIndex))
-	       (setf (aref sequenceToSort currentToSortIndex) temp))
+	     (swapArrayItems sequenceToSort 0 currentToSortIndex)
 	     (decf currentToSortIndex 1)
 	     (let ((checkedElementIndex 0))
 	       (loop
@@ -289,16 +267,12 @@
 			   (unless (funcall sortKey (aref sequenceToSort rightChildIndex) (aref sequenceToSort leftChildIndex))
 			     (setq toSwapIndex rightChildIndex))
 			   (cond ((not (funcall sortKey (aref sequenceToSort toSwapIndex) (aref sequenceToSort checkedElementIndex)))
-				  (let ((temp (aref sequenceToSort checkedElementIndex)))
-				    (setf (aref sequenceToSort checkedElementIndex) (aref sequenceToSort toSwapIndex))
-				    (setf (aref sequenceToSort toSwapIndex) temp))
+				  (swapArrayItems sequenceToSort checkedElementIndex toSwapIndex)
 				  (setq checkedElementIndex toSwapIndex))
 				 (t (return)))))
 			((= leftChildIndex currentToSortIndex)
 			 (unless (funcall sortKey (aref sequenceToSort leftChildIndex) (aref sequenceToSort checkedElementIndex))
-			   (let ((temp (aref sequenceToSort checkedElementIndex)))
-			     (setf (aref sequenceToSort checkedElementIndex) (aref sequenceToSort leftChildIndex))
-			     (setf (aref sequenceToSort leftChildIndex) temp)))
+			   (swapArrayItems sequenceToSort checkedElementIndex leftChildIndex))
 			 (return))
 			(t (return)))))))))))))
 
