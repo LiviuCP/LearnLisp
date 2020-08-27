@@ -30,9 +30,16 @@
 	    (setq success t)
 	    (loop for element in elements
 		  do
-		  (let ((converted (parse-integer element :junk-allowed t)))
-		    (cond ((null converted) (setq success nil) (write-line "Invalid element detected. App aborted.") (return))
-			  (t (setf (aref elementsArray currentIndex) converted) (decf currentIndex 1)))))))))
+		  (let ((converted (convertStringToInt element))) ; option 1: integer
+		    (when (null converted)
+		      (setq converted (convertStringToFloat element)) ; option 2: decimal (float or fraction; resulting integers, e.g. string "4/2" to be converted to float)
+		      (when (null converted)
+			(setq success nil)
+			(write-line "Invalid element detected. App aborted.")
+			(return)))
+		    (when success
+		      (setf (aref elementsArray currentIndex) converted)
+		      (decf currentIndex 1))))))))
     ; do the necessary calculations on the array: shuffle, counter-sort, sort etc and write results to file
     (when success
       (setq elementsArrayCopy (make-array (length elementsArray)))
