@@ -450,6 +450,70 @@
     (assert-true (equalp testArray #())))
 )
 
+(define-test test-bucket-sort
+  (let ((testArray #(9 5 8 7 3 4 6 2 0 1))) ; same number of elements and numbers within range
+    (bucketSort testArray)
+    (assert-true (equalp testArray #(0 1 2 3 4 5 6 7 8 9))))
+
+  (let ((testArray #(9 5 8 7 3 4 6 2 0 1))) ; same number of elements and numbers within range
+    (bucketSort testArray :reverse t)
+    (assert-true (equalp testArray #(9 8 7 6 5 4 3 2 1 0))))
+
+  (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8))) ; higher range than number of elements
+    (bucketSort testArray)
+    (assert-true (equalp testArray #(-7 -1 0 2 2 3 4 5 5 8))))
+
+  (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8))) ; higher range than number of elements
+    (bucketSort testArray :reverse t)
+    (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7))))
+
+  (let ((testArray #(-3 1 0 2 1 1 -3 -2 1 -1 -1 -1 0 1 2 2 -1 1 0 0))) ; lower range than number of elements
+    (bucketSort testArray)
+    (assert-true (equalp testArray #(-3 -3 -2 -1 -1 -1 -1 0 0 0 0 1 1 1 1 1 1 2 2 2))))
+
+  (let ((testArray #(-3 1 0 2 1 1 -3 -2 1 -1 -1 -1 0 1 2 2 -1 1 0 0))) ; lower range than number of elements
+    (bucketSort testArray :reverse t)
+    (assert-true (equalp testArray #(2 2 2 1 1 1 1 1 1 0 0 0 0 -1 -1 -1 -1 -2 -3 -3))))
+
+  ; do some sub-sequence tests too
+  (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
+    (bucketSort testArray :left 0 :right 10)
+    (assert-true (equalp testArray #(-7 -1 0 2 2 3 4 5 5 8))))
+
+  (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8 -2 10)))
+    (bucketSort testArray :left 0 :right 10)
+    (assert-true (equalp testArray #(-7 -1 0 2 2 3 4 5 5 8 -2 10))))
+
+  (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8)))
+    (bucketSort testArray :left 2 :right 12)
+    (assert-true (equalp testArray #(-2 10 -7 -1 0 2 2 3 4 5 5 8))))
+
+  (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8 -2 10)))
+    (bucketSort testArray :right 10 :reverse t)
+    (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7 -2 10))))
+
+  (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8)))
+    (bucketSort testArray :left 2 :reverse t)
+    (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7))))
+
+  (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8 -10 2)))
+    (bucketSort testArray :left 2 :right 12 :reverse t)
+    (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7 -10 2))))
+
+  ; corner cases
+  (let ((testArray #(5 -2)))
+    (bucketSort testArray)
+    (assert-true (equalp testArray #(-2 5))))
+
+  (let ((testArray #(2)))
+    (bucketSort testArray :left 0 :right 1)
+    (assert-true (equalp testArray #(2))))
+
+  (let ((testArray #()))
+    (bucketSort testArray)
+    (assert-true (equalp testArray #())))
+)
+
 (define-test test-sorted-groups-info
   (assert-true (equalp (getSortedGroupsInfo #(-2 4  1 3 5 8 5 -1  2 1 4 2 3  -7 4 5  -1  9 7 -2)) '(2 2 3 4 3 3 20)))
   (assert-true (equalp (getSortedGroupsInfo #(-2 4  1 3 5 8 5 -1  2 1 4 2 3  -7 4 5  -1  9 7 -2) (lambda(a b)(let ((result))(setq result (>= a b))))) '(2 2 3 3 3 4 20)))

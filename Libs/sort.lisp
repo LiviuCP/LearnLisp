@@ -1,5 +1,8 @@
 #| This file contains sorting algorithm implementations and other shuffle and statistics functions.
-All sorting algorithms have the possibility to do sub-sequence sorting in arrays, e.g. sort elements with indexes 2 through 5 from a 10 elements array. |#
+
+All sorting algorithms have the possibility to do sub-sequence sorting in arrays, e.g. sort elements with indexes 2 through 5 from a 10 elements array. 
+
+In any file where sort.lisp is loaded ensure "utils.lisp" is loaded too! |#
 
 
 ;;; sortKey is the ordering criteria (e.g. a<=b), reverseKey is the ordering criteria of first 2 elements (according (nil) or reversed (t) to sortKey); criteria is that continually reversed for each step
@@ -284,6 +287,55 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 			   (swapArrayItems sequenceToSort checkedElementIndex leftChildIndex))
 			 (return))
 			(t (return)))))))))))))
+
+(defun bucketSort(inputArray &key left right reverse)
+  "This function implements a quasi-linear sorting algorithm: bucket sort. For the moment it only deals with integer numbers (possibly to be updated in the future to support real numbers too)."
+  (check-type inputArray array)
+  (unless (null left)
+    (check-type left integer)
+    (assert (and (>= left 0) (< left (length inputArray))) (left) "Left interval index out of range"))
+  (unless (null right)
+    (check-type right integer)
+    (assert (and (> right 0) (<= right (length inputArray))) (right) "Right interval index out of range"))
+  (unless (or (null left) (null right))
+    (assert (< left right) (left right) "Invalid sorting sub-sequence"))
+  (dotimes (index (length inputArray))
+    (check-type (aref inputArray index) integer))
+  (defconstant insertionSortThreshold 10 "Maximum number of bucket elements for which insertion sort applies. For more elements quick sort is applied.")
+  (when (> (length inputArray) 1)
+    (when (null left)
+      (setq left 0))
+    (when (null right)
+      (setq right (length inputArray)))
+    (let ((sortingLength (- right left)))
+      (when (> sortingLength 1)
+	(let* ((sequenceToSort (make-array `(,sortingLength) :displaced-to inputArray :displaced-index-offset left))
+	       (minMaxElements (getMinMaxArrayElement sequenceToSort))
+	       (offset (- 0 (car minMaxElements))) ; used for retrieving the bucket number (all elements temporarily made positive for this)
+	       (rangeLength (+ (cadr minMaxElements) offset 1)) ; required for retrieving the bucket number (actual number of elements should be matched to the maximum distinct numbers within interval)
+	       (bucketFactor (ceiling (/ rangeLength (length sequenceToSort)))) ; maximum number of distinct elements to be entered into a bucket
+	       (buckets (make-array `(,sortingLength)))) ; hash-table containing buckets (by concatenating sorted buckets we get the sorted array)
+	  ; distribute elements among buckets
+	  (dotimes (index sortingLength)
+	    (let ((bucketNumber (floor (+ (aref sequenceToSort index) offset) bucketFactor)))
+	      (when reverse
+		(setq bucketNumber (- (length buckets) 1 bucketNumber)))
+	      (if (not (null (aref buckets bucketNumber)))
+		  (setf (aref buckets bucketNumber) (cons (aref sequenceToSort index) (aref buckets bucketNumber)))
+		(setf (aref buckets bucketNumber) (list (aref sequenceToSort index))))))
+	  ; sort each bucket, concatenate them to get the sorted array
+	  (let* ((leftIndex 0) (rightIndex leftIndex) (sortKey))
+	    (when reverse
+	      (setq sortKey (lambda(a b)(let ((result))(setq result (>= a b))))))
+	    (dotimes (index (length buckets))
+	      (unless (null (aref buckets index))
+		(dolist (element (aref buckets index))
+		  (setf (aref sequenceToSort rightIndex) element)
+		  (incf rightIndex 1))
+		(if (<= (- rightIndex leftIndex) insertionSortThreshold)
+		    (insertionSort sequenceToSort :sortKey sortKey :left leftIndex :right rightIndex)
+		  (quickSort sequenceToSort :sortKey sortKey :left leftIndex :right rightIndex)))
+	      (setq leftIndex rightIndex))))))))
 
 (defun getSortedGroupsInfo(inputArray &optional sortKey)
   "This function provides specific statistics regarding the elements of an array (e.g. number of sub-sequences sorted by key)."
