@@ -313,8 +313,9 @@ In any file where sort.lisp is loaded ensure "utils.lisp" is loaded too! |#
 	       (minMaxElements (getMinMaxArrayElement sequenceToSort))
 	       (offset (- 0 (car minMaxElements))) ; used for retrieving the bucket number (all elements temporarily made positive for this)
 	       (rangeLength (+ (cadr minMaxElements) offset 1)) ; required for retrieving the bucket number (actual number of elements should be matched to the maximum distinct numbers within interval)
-	       (bucketFactor (ceiling (/ rangeLength (length sequenceToSort)))) ; maximum number of distinct elements to be entered into a bucket
-	       (buckets (make-array `(,sortingLength)))) ; hash-table containing buckets (by concatenating sorted buckets we get the sorted array)
+	       (bucketFactor (ceiling (/ rangeLength sortingLength))) ; maximum number of distinct elements to be entered into a bucket
+	       (bucketsNumber (min rangeLength sortingLength)) ; actual number of buckets used for sorting
+	       (buckets (make-array `(,bucketsNumber)))) ; hash-table containing buckets (by concatenating sorted buckets we get the sorted array)
 	  ; distribute elements among buckets
 	  (dotimes (index sortingLength)
 	    (let ((bucketNumber (floor (+ (aref sequenceToSort index) offset) bucketFactor)))
