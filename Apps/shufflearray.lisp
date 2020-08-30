@@ -1,5 +1,4 @@
 (load "../Libs/sort.lisp")
-(load "../Libs/utils.lisp")
 (load "../Libs/parse.lisp")
 
 ; enter array values in input file, check output in output file (modify paths if required)

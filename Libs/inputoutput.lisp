@@ -1,3 +1,5 @@
+(load (merge-pathnames "parse.lisp" *load-truename*))
+
 (defun requestIntInput(message)
   "This function is used for taking over pure integer user input. It will exit only if the user aborts data entry or a correct integer has been entered as string."
   (check-type message string)

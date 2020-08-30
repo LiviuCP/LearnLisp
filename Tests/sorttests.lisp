@@ -1,5 +1,4 @@
 (load "../Libs/sort.lisp")
-(load "../Libs/utils.lisp")
 
 (define-test test-counter-sort
   (let ((testArray #(1 4 6 2 3 5 9 7 8 0)))

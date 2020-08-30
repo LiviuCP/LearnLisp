@@ -1,6 +1,5 @@
 (load "../Libs/mathfunctions.lisp")
 (load "../Libs/inputoutput.lisp")
-(load "../Libs/parse.lisp")
 
 (defun main()
   (let ((matrixOrder) (firstParam) (secondParam) (thirdParam) (fourthParam))

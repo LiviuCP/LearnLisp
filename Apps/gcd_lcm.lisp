@@ -1,6 +1,5 @@
 (load "../Libs/mathfunctions.lisp")
 (load "../Libs/inputoutput.lisp")
-(load "../Libs/parse.lisp")
 
 (defun main()
   (let ((first) (second)) ; declare both variables here to have a better overview

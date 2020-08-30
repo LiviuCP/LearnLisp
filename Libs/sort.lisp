@@ -1,9 +1,8 @@
 #| This file contains sorting algorithm implementations and other shuffle and statistics functions.
 
-All sorting algorithms have the possibility to do sub-sequence sorting in arrays, e.g. sort elements with indexes 2 through 5 from a 10 elements array. 
+All sorting algorithms have the possibility to do sub-sequence sorting in arrays, e.g. sort elements with indexes 2 through 5 from a 10 elements array. |#
 
-In any file where sort.lisp is loaded ensure "utils.lisp" is loaded too! |#
-
+(load (merge-pathnames "utils.lisp" *load-truename*))
 
 ;;; sortKey is the ordering criteria (e.g. a<=b), reverseKey is the ordering criteria of first 2 elements (according (nil) or reversed (t) to sortKey); criteria is that continually reversed for each step
 (defun counterSort(inputArray &optional reverseKey sortKey) 
