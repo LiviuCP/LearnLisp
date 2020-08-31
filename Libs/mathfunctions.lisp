@@ -1,6 +1,6 @@
 (defconstant +firstRelevantPrime+ 2 "First useful prime number (1 is not relevant).")
 
-(defun gCommonDiv (first second)
+(defun greatest-common-divisor (first second)
   "This function retrieves the greatest common divisor of two integer numbers by using the remainder method."
   (check-type first integer)
   (check-type second integer)
@@ -10,42 +10,42 @@
      (let ((remainder (rem divided divider)))
        (cond ((= remainder 0)(setq result divider)(return))
 	     (t (setq divided divider) (setq divider remainder)))))
-    (return-from gCommonDiv result)))
+    (return-from greatest-common-divisor result)))
 
-(defun gCommonDivPrimeFactors(first second)
+(defun greatest-common-divisor-prime-factors(first second)
   "This function retrieves the greatest common divisor of two integer numbers by using the prime factors decomposition."
   (check-type first integer)
   (check-type second integer)
   (assert (and (/= first 0) (/= second 0)) (first second) "Both arguments should be different from 0")
-  (defun getGcdOnePrimeNumber(primeNr notPrimeNr)
+  (defun get-gcd-one-prime-number(primeNr notPrimeNr)
     (let ((gcdOnePrime 1))
       (if (= (rem notPrimeNr primeNr) 0)
 	  (setq gcdOnePrime primeNr))
-      (return-from getGcdOnePrimeNumber gcdOnePrime)))
+      (return-from get-gcd-one-prime-number gcdOnePrime)))
   ; simplify by using absolute values for retrieving l.c.m.
-  (let* ((gcd 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst (getPrimeFactorsForNumber absFirst)) (primeFactorsSecond (getPrimeFactorsForNumber absSecond)))
+  (let* ((gcd 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst (get-prime-factors-for-number absFirst)) (primeFactorsSecond (get-prime-factors-for-number absSecond)))
     (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
 	   (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the minimum exponent to calculate g.c.d.
 		 do (unless (null (gethash primeFactor primeFactorsSecond))
 		      (let ((firstExponent (gethash primeFactor primeFactorsFirst)) (secondExponent (gethash primeFactor primeFactorsSecond)))
 			(setq gcd (* gcd (expt primeFactor (min firstExponent secondExponent))))))))
-	  ((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq gcd (getGcdOnePrimeNumber absSecond absFirst))) ; second number is prime, no need to use prime factors
-	  ((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq gcd (getGcdOnePrimeNumber absFirst absSecond))) ; first number is prime, no need to use prime factors
+	  ((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq gcd (get-gcd-one-prime-number absSecond absFirst))) ; second number is prime, no need to use prime factors
+	  ((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq gcd (get-gcd-one-prime-number absFirst absSecond))) ; first number is prime, no need to use prime factors
 	  ((= absFirst absSecond) (setq gcd absFirst)))
-    (return-from gCommonDivPrimeFactors gcd)))
+    (return-from greatest-common-divisor-prime-factors gcd)))
 
-(defun lCommonMulPrimeFactors(first second)
+(defun least-common-multiple-prime-factors(first second)
   "This function retrieves the least common multiple of two integer numbers by using the prime factors decomposition."
   (check-type first integer)
   (check-type second integer)
   (assert (and (/= first 0) (/= second 0)) (first second) "Both arguments should be different from 0")
-  (defun getLcmOnePrimeNumber(primeNr notPrimeNr)
+  (defun get-lcm-one-prime-number(primeNr notPrimeNr)
     (let ((lcmOnePrime 1))
       (if (= (rem notPrimeNr primeNr) 0)
 	  (setq lcmOnePrime (abs notPrimeNr))
 	(setq lcmOnePrime (* primeNr notPrimeNr)))
-    (return-from getLcmOnePrimeNumber lcmOnePrime)))
-  (let* ((lcm 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst (getPrimeFactorsForNumber absFirst)) (primeFactorsSecond (getPrimeFactorsForNumber absSecond)))
+    (return-from get-lcm-one-prime-number lcmOnePrime)))
+  (let* ((lcm 1) (absFirst (abs first)) (absSecond (abs second)) (primeFactorsFirst (get-prime-factors-for-number absFirst)) (primeFactorsSecond (get-prime-factors-for-number absSecond)))
     (cond ((and (not (null primeFactorsFirst)) (not (null primeFactorsSecond)))
 	   (let ((consolidatedPrimeFactors primeFactorsSecond))
 	     (loop for primeFactor being each hash-key of primeFactorsFirst ; get common prime factors for both numbers and use the maximum exponent to calculate l.c.m.
@@ -57,24 +57,24 @@
 	     (loop for primeFactor being each hash-key of consolidatedPrimeFactors ; calculate l.c.m. based on consolidated prime factors
 		   do
 		   (setq lcm (* lcm (expt primeFactor (gethash primeFactor consolidatedPrimeFactors)))))))
-	  ((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq lcm (getLcmOnePrimeNumber absSecond absFirst))) ; second number is prime, no need to use prime factors
-	  ((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq lcm (getLcmOnePrimeNumber absFirst absSecond))) ; first number is prime, no need to use prime factors
+	  ((and (not (null primeFactorsFirst)) (null primeFactorsSecond) (> absFirst absSecond)) (setq lcm (get-lcm-one-prime-number absSecond absFirst))) ; second number is prime, no need to use prime factors
+	  ((and (not (null primeFactorsSecond)) (null primeFactorsFirst) (> absSecond absFirst)) (setq lcm (get-lcm-one-prime-number absFirst absSecond))) ; first number is prime, no need to use prime factors
 	  ((= absFirst absSecond) (setq lcm absFirst))
 	  (t (setq lcm (* absFirst absSecond))))
-    (return-from lCommonMulPrimeFactors lcm)))
+    (return-from least-common-multiple-prime-factors lcm)))
 
-(defun getPrimeFactorsForNumber(number)
+(defun get-prime-factors-for-number(number)
   "This function retrieves prime factors for an integer number."
   (check-type number integer)
   (assert (/= number 0) (number) "The argument should be different from 0")
-  (defun convertPrimesArrayToList(primesArray)
+  (defun convert-primes-array-to-list(primesArray)
     (let ((arrayLength (length primesArray)) (primesList (list)))
       (dotimes (index arrayLength)
 	(setq primesList (cons (aref primesArray (- (- arrayLength 1) index)) primesList)))
-      (return-from convertPrimesArrayToList primesList)))
+      (return-from convert-primes-array-to-list primesList)))
   (let ((result) (numberToDivide (abs number))) ; key = prime number, value = number of occurrences within the numberToDivide (power exponent)
     (unless (= numberToDivide 1)
-      (let ((primesUntilNumber (convertPrimesArrayToList (getPrimeNumbers numberToDivide))))
+      (let ((primesUntilNumber (convert-primes-array-to-list (get-prime-numbers numberToDivide))))
 	(unless (member numberToDivide primesUntilNumber)
 	  (let ((primeFactors (make-hash-table)))
 	    (loop for prime in primesUntilNumber
@@ -90,9 +90,9 @@
 		       (when (= numberToDivide 1)
 			   (return)))
 	    (setq result primeFactors)))))
-    (return-from getPrimeFactorsForNumber result)))
+    (return-from get-prime-factors-for-number result)))
 
-(defun getPrimeNumbers(right &optional left) ; the search interval has only one mandatory defined margin, namely the right one (left is optional, if not defined than it is presumed 2 - first relevant prime nr)
+(defun get-prime-numbers(right &optional left) ; the search interval has only one mandatory defined margin, namely the right one (left is optional, if not defined than it is presumed 2 - first relevant prime nr)
   "This function retrieves prime numbers in a specific interval (default is [2; right])."
   (check-type right integer)
   (assert (> right 1) (right) "The given threshold is invalid")
@@ -125,9 +125,9 @@
 	    (return))))
       (let ((finalNrOfElements (- (fill-pointer identifiedPrimes) leftIndex)))
 	(setq identifiedPrimesFinal (make-array `(,finalNrOfElements) :displaced-to identifiedPrimes :displaced-index-offset leftIndex))))
-    (return-from getPrimeNumbers identifiedPrimesFinal)))
+    (return-from get-prime-numbers identifiedPrimesFinal)))
 
-(defun getFibonacciMatrix(order &optional initialValues) ; initialValues should be a list of four integer elements that are (in this order): (0, 0), (0, 1), (1, 0), (1, 1)
+(defun get-fibonacci-matrix(order &optional initialValues) ; initialValues should be a list of four integer elements that are (in this order): (0, 0), (0, 1), (1, 0), (1, 1)
   "This function calculates a Fibonacci-like matrix; on each row, column and diagonal each number is the sum of the previous two numbers (initial numbers can be provided by user)."
   (check-type order integer)
   (assert (> order 0) (order) "The matrix order is invalid")
@@ -161,4 +161,4 @@
 		(setf (aref fibMatrix rowIndex diagIndex) (+ (aref fibMatrix rowIndex secPrevDiagIndex) (aref fibMatrix rowIndex prevDiagIndex))))
 	      (dotimes (colIndex diagIndex)
 		(setf (aref fibMatrix diagIndex colIndex) (+ (aref fibMatrix secPrevDiagIndex colIndex) (aref fibMatrix prevDiagIndex colIndex)))))))
-    (return-from getFibonacciMatrix fibMatrix)))
+    (return-from get-fibonacci-matrix fibMatrix)))

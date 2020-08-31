@@ -1,6 +1,6 @@
 (defconstant +digits+ (list #\0 #\1 #\2 #\3 #\4 #\5 #\6 #\7 #\8 #\9) "We use this constant for mapping number characters to actual digits.")
 
-(defun getDigitCharToNumberHash()
+(defun get-digit-char-to-number-hash()
   "This hash table is used for mapping digit characters to actual numeric digits when converting the string to a number."
   (let ((digitHash (make-hash-table)))
     (setf (gethash #\0 digitHash) 0)
@@ -13,11 +13,11 @@
     (setf (gethash #\7 digitHash) 7)
     (setf (gethash #\8 digitHash) 8)
     (setf (gethash #\9 digitHash) 9)
-    (return-from getDigitCharToNumberHash digitHash)))
+    (return-from get-digit-char-to-number-hash digitHash)))
 
-(defun convertStringToInt(str)
+(defun convert-string-to-integer(str)
   "This function is an alternative to the parse-integer function."
-  (defun isStringConvertibleToInteger(str)
+  (defun is-string-convertible-to-integer(str)
     (let ((isInteger t))
       (cond ((= (length str) 0) (setq isInteger nil))                                             ; case 1: no characters
 	    ((and (= (length str) 1) (not (member (aref str 0) +digits+))) (setq isInteger nil))    ; case 2: single character, should be numeric
@@ -28,12 +28,12 @@
 		     do (unless (member (aref str index) +digits+)
 			  (setq isInteger nil)
 			  (return))))))
-      (return-from isStringConvertibleToInteger isInteger)))
+      (return-from is-string-convertible-to-integer isInteger)))
   (check-type str string)
   (let ((intResult))
-    (when (isStringConvertibleToInteger str)
+    (when (is-string-convertible-to-integer str)
       (setq intResult 0)
-      (let ((startPos 0) (charToNumberHash (getDigitCharToNumberHash)))
+      (let ((startPos 0) (charToNumberHash (get-digit-char-to-number-hash)))
 	(when (char-equal (aref str 0) #\-)
 	  (setq startPos 1))
 	(loop for index from startPos to (- (length str) 1)
@@ -43,14 +43,14 @@
 	      (setq intResult (+ intResult (* intDigit (expt 10 intDigitExponent)))))
 	(if (= startPos 1)
 	    (setq intResult (- 0 intResult)))))
-    (return-from convertStringToInt intResult)))
+    (return-from convert-string-to-integer intResult)))
 
-(defun convertStringToFloat(str)
+(defun convert-string-to-float(str)
   "This function parses a string to a float or fraction (depending on string format). It uses a state machine with following states:
   0 - Init, 1 - SignAdded, 2 - LeftDigitsAdded, 3 - CommaAdded, 4 - RightDigitsAdded, 5 - Invalid, 6 - SlashAdded, 7 - SecondSignAdded (last two states for fraction strings only)."
   (check-type str string)
-  (let ((commaPosition -1) (slashPosition -1) (isNegative) (charToNumberHash (getDigitCharToNumberHash)) (leftNumberString) (rightNumberString) (result))
-    (defun isStringConvertibleToFloat(str)
+  (let ((commaPosition -1) (slashPosition -1) (isNegative) (charToNumberHash (get-digit-char-to-number-hash)) (leftNumberString) (rightNumberString) (result))
+    (defun is-string-convertible-to-float(str)
       (let ((state 0) (isDivisionByZero))
 	(cond ((= (length str) 0) (setq state 5))
 	      ((char-equal (aref str 0) #\-) (setq state 1) (setq isNegative t))
@@ -93,29 +93,29 @@
           ; if the string is a fraction it should not be convertible if a division by zero is detected
 	  (when (and (= state 4) (/= slashPosition -1) (= (length (string-left-trim "0" rightNumberString)) 0))
 	    (setq isDivisionByZero t)))
-	(return-from isStringConvertibleToFloat (or (= state 2) (and (= state 4) (not isDivisionByZero)))))) ; the string should be an integer or a float/fraction
-    (defun getIntegerFromString(intString) ; converts a (checked) pure-numeric string (no negative sign) to integer, e.g. "123" to 123
+	(return-from is-string-convertible-to-float (or (= state 2) (and (= state 4) (not isDivisionByZero)))))) ; the string should be an integer or a float/fraction
+    (defun get-integer-from-string(intString) ; converts a (checked) pure-numeric string (no negative sign) to integer, e.g. "123" to 123
       (let ((result 0))
 	(loop for index from 0 to (- (length intString) 1)
 	      do
 	      (let ((digitExponent (- (length intString) 1 index)) (numberDigit (gethash (aref intString index) charToNumberHash)))
 		(setq result (+ result (* numberDigit (expt 10 digitExponent))))))
-	(return-from getIntegerFromString result)))
-    (defun getDecimalFromString(decString) ; convert a (checked) pure-numeric string (no negative sign) to pure decimal, e.g. "123" to 0.123
+	(return-from get-integer-from-string result)))
+    (defun get-decimal-from-string(decString) ; convert a (checked) pure-numeric string (no negative sign) to pure decimal, e.g. "123" to 0.123
       (let ((result 0))
 	(loop for index from 0 to (- (length decString) 1)
 	      do
 	      (let ((digitExponent (+ 1 index)) (numberDigit (gethash (aref decString index) charToNumberHash)))
 		(setq result (+ result (* numberDigit (expt 0.1 digitExponent))))))
-	(return-from getDecimalFromString result)))
-    (when (isStringConvertibleToFloat str)
+	(return-from get-decimal-from-string result)))
+    (when (is-string-convertible-to-float str)
       ; do actual conversion to a float value
       (setq result 0.0)
       (unless (null rightNumberString)
 	(if (/= commaPosition -1) ; get right side number (pure decimal part / fraction denominator)
-	    (setq result (getDecimalFromString rightNumberString))
-	  (setq result (getIntegerFromString rightNumberString))))
-      (let ((intPart (getIntegerFromString leftNumberString))) ; get integer part or numerator and combine it to partial outcome to obtain the end result
+	    (setq result (get-decimal-from-string rightNumberString))
+	  (setq result (get-integer-from-string rightNumberString))))
+      (let ((intPart (get-integer-from-string leftNumberString))) ; get integer part or numerator and combine it to partial outcome to obtain the end result
 	(if (/= slashPosition -1)
 	    (if (= 0 (rem intPart result))
 		(setq result (* 1.0 (/ intPart result))) ; integer fraction
@@ -123,4 +123,4 @@
 	  (setq result (+ result intPart)))) ; integer part for integer/decimal string
       (unless (null isNegative) ; finally add the negative sign (if applicable)
 	(setq result (- 0 result))))
-    (return-from convertStringToFloat result)))
+    (return-from convert-string-to-float result)))

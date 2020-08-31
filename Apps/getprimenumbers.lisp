@@ -5,16 +5,16 @@
 
 (defun main()
   (let ((left) (right))
-    (setq left (requestIntInputWithCondition "Enter the left interval margin: " #'(lambda(val)(let ((isGreater)) (setq isGreater (> val 1)))) "The number should be greater than 1. Please try again"))
+    (setq left (request-integer-input-with-condition "Enter the left interval margin: " #'(lambda(val)(let ((isGreater)) (setq isGreater (> val 1)))) "The number should be greater than 1. Please try again"))
     (unless (null left)
-      (setq right (requestIntInputWithCondition "Enter the right interval margin: " #'(lambda(val)(let ((isGreater)) (setq isGreater (> val 1)))) "The number should be greater than 1. Please try again")))
+      (setq right (request-integer-input-with-condition "Enter the right interval margin: " #'(lambda(val)(let ((isGreater)) (setq isGreater (> val 1)))) "The number should be greater than 1. Please try again")))
     (cond ((null right) (write-line "You quit"))
 	  (t (let ((primes (list)))
 	       (cond ((> left right) (let ((temp left)) (setq left right) (setq right temp))))
 	       (terpri)
 	       (princ "Retrieving prime numbers from interval: ")
-	       (cond ((< left right) (format t "[~d; ~d]~%~%" left right) (setq primes (getPrimeNumbers right left)))
-		     (t (format t "[~d; ~d]~%~%" +firstRelevantPrime+ right) (setq primes (getPrimeNumbers left)))) ; //equal margins, only one threshold, display prime numbers starting with 2
+	       (cond ((< left right) (format t "[~d; ~d]~%~%" left right) (setq primes (get-prime-numbers right left)))
+		     (t (format t "[~d; ~d]~%~%" +firstRelevantPrime+ right) (setq primes (get-prime-numbers left)))) ; //equal margins, only one threshold, display prime numbers starting with 2
 	       (princ "Done!")
 	       (terpri)
 	       (terpri)

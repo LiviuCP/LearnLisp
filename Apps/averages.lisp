@@ -7,7 +7,7 @@
     (terpri)
     (let ((iterationNr 1))
       (loop
-       (let ((number (requestIntInput (concatenate 'string "Enter number " (write-to-string iterationNr) " (press ENTER to stop): "))))
+       (let ((number (request-integer-input (concatenate 'string "Enter number " (write-to-string iterationNr) " (press ENTER to stop): "))))
 	 (cond ((not (null number)) (setq numbersList (cons number numbersList)) (incf iterationNr))
 	       (t (return))))))
     (terpri)

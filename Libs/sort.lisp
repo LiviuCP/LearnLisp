@@ -5,7 +5,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 (load (merge-pathnames "utils.lisp" *load-truename*))
 
 ;;; sortKey is the ordering criteria (e.g. a<=b), reverseKey is the ordering criteria of first 2 elements (according (nil) or reversed (t) to sortKey); criteria is that continually reversed for each step
-(defun counterSort(inputArray &optional reverseKey sortKey) 
+(defun counter-sort(inputArray &optional reverseKey sortKey) 
   "This function performs a simple \"shuffle\" of the array by ordering the elements: a[0] <= a[1] >= a[2] <= a[3] ... or a[0] >= a[1] <= a[2] >= a[3] ..."
   (check-type inputArray array)
   (dotimes (index (length inputArray))
@@ -19,7 +19,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	(swapArrayItems inputArray index (+ index 1)))
       (setq keyOrderRequired (not keyOrderRequired))))) ; change ordering type for each step (according to key (e.g. increasing) / reverse to key (e.g. decreasing))
 
-(defun shuffleArray(inputArray)
+(defun shuffle-array(inputArray)
   "This function performs more complex mixing (shuffling) of array elements by swapping elements from right half of the array with randomly chosen elements from left half."
   (check-type inputArray array)
   (dotimes (index (length inputArray))
@@ -49,7 +49,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	  ((>= index (- (length inputArray) 1)))
 	  (swapArrayItems inputArray index (+ index 1))))))
 
-(defun bubbleSort(inputArray &key sortKey left right)
+(defun bubble-sort(inputArray &key sortKey left right)
   "This function implements the simplest (brute-force) algorithm: bubble sort."
   (check-type inputArray array)
   (unless (null left)
@@ -81,7 +81,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	 (unless sortingPerformed ; stop when no item swap performed along the iteration
 	   (return)))))))
 
-(defun insertionSort(inputArray &key sortKey left right)
+(defun insertion-sort(inputArray &key sortKey left right)
   "This function implements the insertion sort algorithm."
   (check-type inputArray array)
   (unless (null left)
@@ -117,13 +117,13 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 			 (t (return)))
 		   (decf checkedIndex 1)))))))))
 
-(defun mergeSort(inputArray &key sortKey left right)
+(defun merge-sort(inputArray &key sortKey left right)
   "This function implements the merge sort algorithm."
-  (defun doMergeSort(inputArray auxArray startIndex endIndex sortKey)
+  (defun do-merge-sort(inputArray auxArray startIndex endIndex sortKey)
     (when (/= startIndex endIndex)
       (let* ((midIndex (floor (+ startIndex endIndex) 2)) (firstIndex startIndex) (secondIndex (+ midIndex 1)) (writeIndex startIndex))
-	(doMergeSort inputArray auxArray startIndex midIndex sortKey)
-	(doMergeSort inputArray auxArray (+ midIndex 1) endIndex sortKey)
+	(do-merge-sort inputArray auxArray startIndex midIndex sortKey)
+	(do-merge-sort inputArray auxArray (+ midIndex 1) endIndex sortKey)
 	(loop
 	 (if (or (> firstIndex midIndex) (> secondIndex endIndex))
 	     (return))
@@ -170,11 +170,11 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	(let* ((sequenceToSort (make-array `(,sortingLength) :displaced-to inputArray :displaced-index-offset left)) (auxArray (make-array `(,sortingLength))))
 	  (dotimes (index sortingLength)
 	    (setf (aref auxArray index) (aref sequenceToSort index)))
-	  (doMergeSort sequenceToSort auxArray 0 (- sortingLength 1) sortKey))))))
+	  (do-merge-sort sequenceToSort auxArray 0 (- sortingLength 1) sortKey))))))
 
-(defun quickSort (inputArray &key sortkey left right)
+(defun quick-sort (inputArray &key sortkey left right)
   "This function implements the quick sort algorithm. The elements are \"shuffled\" prior to sorting so quadratic time scenarios are avoided as much as possible."
-  (defun doQuickSort(inputArray beginIndex endIndex sortKey)
+  (defun do-quick-sort(inputArray beginIndex endIndex sortKey)
     (when (/= beginIndex endIndex)
       (if (= beginIndex (- endIndex 1))
 	  (unless (funcall sortKey (aref inputArray beginIndex) (aref inputArray endIndex))
@@ -197,9 +197,9 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	       (return)))
 	    (when (> rightIndex beginIndex)
 	      (swapArrayItems inputArray beginIndex rightIndex)
-	      (doQuickSort inputArray beginIndex (- rightIndex 1) sortKey))
+	      (do-quick-sort inputArray beginIndex (- rightIndex 1) sortKey))
 	    (when (< rightIndex endIndex)
-	      (doQuickSort inputArray (+ rightIndex 1) endIndex sortKey)))))))
+	      (do-quick-sort inputArray (+ rightIndex 1) endIndex sortKey)))))))
   (check-type inputArray array)
   (unless (null left)
     (check-type left integer)
@@ -222,12 +222,12 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
     (let ((sortingLength (- right left)))
       (when (> sortingLength 1)
 	(let ((sequenceToSort (make-array `(,sortingLength) :displaced-to inputArray :displaced-index-offset left)))
-	  (counterSort sequenceToSort) ; ensure the array elements are shuffled to avoid having sorted sequences prior to passing it to quick sort
-	  (doQuickSort sequenceToSort 0 (- sortingLength 1) sortKey))))))
+	  (counter-sort sequenceToSort) ; ensure the array elements are shuffled to avoid having sorted sequences prior to passing it to quick sort
+	  (do-quick-sort sequenceToSort 0 (- sortingLength 1) sortKey))))))
 
-(defun heapSort (inputArray &key sortKey left right)
+(defun heap-sort (inputArray &key sortKey left right)
   "This function implements the heap sort algorithm. Heap build is performed prior to actual sorting."
-  (defun buildHeap (inputArray sortKey)
+  (defun build-heap (inputArray sortKey)
     (dotimes (index (length inputArray))
       (let ((checkedElementIndex index))
 	(loop
@@ -261,7 +261,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
     (let ((sortingLength (- right left)))
       (when (> sortingLength 1)
 	(let ((sequenceToSort (make-array `(,sortingLength) :displaced-to inputArray :displaced-index-offset left)))
-	  (buildHeap sequenceToSort sortKey)
+	  (build-heap sequenceToSort sortKey)
 	  (let ((currentToSortIndex (- sortingLength 1)))
 	    (loop
 	     (when (<= currentToSortIndex 0)
@@ -287,7 +287,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 			 (return))
 			(t (return)))))))))))))
 
-(defun bucketSort(inputArray &key left right reverse)
+(defun bucket-sort(inputArray &key left right reverse)
   "This function implements a quasi-linear sorting algorithm: bucket sort. For the moment it only deals with integer numbers (possibly to be updated in the future to support real numbers too)."
   (check-type inputArray array)
   (unless (null left)
@@ -300,7 +300,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
     (assert (< left right) (left right) "Invalid sorting sub-sequence"))
   (dotimes (index (length inputArray))
     (check-type (aref inputArray index) integer))
-  (defconstant +insertionSortThreshold+ 10 "Maximum number of bucket elements for which insertion sort applies. For more elements quick sort is applied.")
+  (defconstant +insertion-sortThreshold+ 10 "Maximum number of bucket elements for which insertion sort applies. For more elements quick sort is applied.")
   (when (> (length inputArray) 1)
     (when (null left)
       (setq left 0))
@@ -332,14 +332,14 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 		(dolist (element (aref buckets index))
 		  (setf (aref sequenceToSort rightIndex) element)
 		  (incf rightIndex 1))
-		(if (<= (- rightIndex leftIndex) +insertionSortThreshold+)
-		    (insertionSort sequenceToSort :sortKey sortKey :left leftIndex :right rightIndex)
-		  (quickSort sequenceToSort :sortKey sortKey :left leftIndex :right rightIndex)))
+		(if (<= (- rightIndex leftIndex) +insertion-sortThreshold+)
+		    (insertion-sort sequenceToSort :sortKey sortKey :left leftIndex :right rightIndex)
+		  (quick-sort sequenceToSort :sortKey sortKey :left leftIndex :right rightIndex)))
 	      (setq leftIndex rightIndex))))))))
 
-(defun getSortedGroupsInfo(inputArray &optional sortKey)
+(defun get-sorted-groups-info(inputArray &optional sortKey)
   "This function provides specific statistics regarding the elements of an array (e.g. number of sub-sequences sorted by key)."
-  (defun getMinNrOfSortedElements(currentMinNr providedMinNr)
+  (defun get-minimum-number-of-sorted-elements(currentMinNr providedMinNr)
     (let ((newMinNr))
       (if (= currentMinNr 0)
 	  (setq newMinNr providedMinNr)
@@ -364,14 +364,14 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 			(incf currentNrOfGroupElements 1))
 		       (t (when (>= currentNrOfGroupElements 3)
 			    (incf groupsSortedByKey 1)
-			    (setq minNrOfElemSortedByKey (getMinNrOfSortedElements minNrOfElemSortedByKey currentNrOfGroupElements))
+			    (setq minNrOfElemSortedByKey (get-minimum-number-of-sorted-elements minNrOfElemSortedByKey currentNrOfGroupElements))
 			    (setq maxNrOfElemSortedByKey (max maxNrOfElemSortedByKey currentNrOfGroupElements)))
 			  (setq currentNrOfGroupElements 2)
 			  (setq state 2))))
 	      (2 (cond ((funcall sortKey (aref inputArray index) (aref inputArray (+ index 1)))
 			(when (>= currentNrOfGroupElements 3)
 			  (incf groupsSortedAgainstKey 1)
-			  (setq minNrOfElemSortedAgainstKey (getMinNrOfSortedElements minNrOfElemSortedAgainstKey currentNrOfGroupElements))
+			  (setq minNrOfElemSortedAgainstKey (get-minimum-number-of-sorted-elements minNrOfElemSortedAgainstKey currentNrOfGroupElements))
 			  (setq maxNrOfElemSortedAgainstKey (max maxNrOfElemSortedAgainstKey currentNrOfGroupElements)))
 			(setq currentNrOfGroupElements 2)
 			(setq state 1))
@@ -380,10 +380,10 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
       (when (>= currentNrOfGroupElements 3)
 	(cond ((= state 1)
 	       (incf groupsSortedByKey 1)
-	       (setq minNrOfElemSortedByKey (getMinNrOfSortedElements minNrOfElemSortedByKey currentNrOfGroupElements))
+	       (setq minNrOfElemSortedByKey (get-minimum-number-of-sorted-elements minNrOfElemSortedByKey currentNrOfGroupElements))
 	       (setq maxNrOfElemSortedByKey (max maxNrOfElemSortedByKey currentNrOfGroupElements)))
 	      (t
 	       (incf groupsSortedAgainstKey 1)
-	       (setq minNrOfElemSortedAgainstKey (getMinNrOfSortedElements minNrOfElemSortedAgainstKey currentNrOfGroupElements))
+	       (setq minNrOfElemSortedAgainstKey (get-minimum-number-of-sorted-elements minNrOfElemSortedAgainstKey currentNrOfGroupElements))
 	       (setq maxNrOfElemSortedAgainstKey(max maxNrOfElemSortedAgainstKey currentNrOfGroupElements))))))
-    (return-from getSortedGroupsInfo (list groupsSortedByKey groupsSortedAgainstKey minNrOfElemSortedByKey maxNrOfElemSortedByKey minNrOfElemSortedAgainstKey maxNrOfElemSortedAgainstKey (length inputArray)))))
+    (return-from get-sorted-groups-info (list groupsSortedByKey groupsSortedAgainstKey minNrOfElemSortedByKey maxNrOfElemSortedByKey minNrOfElemSortedAgainstKey maxNrOfElemSortedAgainstKey (length inputArray)))))

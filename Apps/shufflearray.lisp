@@ -23,15 +23,15 @@
 				     (setq currentElement (read inStr nil))
 				     (when (null currentElement)
 				       (return))
-				     (setq elements (cons (write-to-string currentElement) elements))))) ; use write-to-string to keep the element as string (otherwise convertStringToInt might throw an error)
+				     (setq elements (cons (write-to-string currentElement) elements))))) ; use write-to-string to keep the element as string (otherwise convert-string-to-integer might throw an error)
 	  (setq elementsArray (make-array (length elements)))
 	  (let ((currentIndex (- (length elementsArray) 1)))
 	    (setq success t)
 	    (loop for element in elements
 		  do
-		  (let ((converted (convertStringToInt element))) ; option 1: integer
+		  (let ((converted (convert-string-to-integer element))) ; option 1: integer
 		    (when (null converted)
-		      (setq converted (convertStringToFloat element)) ; option 2: decimal (float or fraction; resulting integers, e.g. string "4/2" to be converted to float)
+		      (setq converted (convert-string-to-float element)) ; option 2: decimal (float or fraction; resulting integers, e.g. string "4/2" to be converted to float)
 		      (when (null converted)
 			(setq success nil)
 			(write-line "Invalid element detected. App aborted.")
@@ -45,7 +45,7 @@
       (dotimes (index (length elementsArray)) ; make an array copy in order to use two different shuffling techniques on the original array sequence (each technique is destructive)
 	(setf (aref elementsArrayCopy index) (aref elementsArray index)))
       (with-open-file (outFile +outputFile+ :direction :output)
-		      (defun writeArrayAndStatistics(message outputArray statistics) ; use this function to write array shuffling statistics in a nicely formatted manner
+		      (defun write-array-and-statistics(message outputArray statistics) ; use this function to write array shuffling statistics in a nicely formatted manner
 			(format outFile message)
 			(terpri outFile)
 			(terpri outFile)
@@ -61,13 +61,13 @@
 			(format outFile "Maximum number of elements in a (strictly) decreasingly sorted sequence: ~d~%" (nth 5 statistics))
 			(format outFile "Number of array elements: ~d~%" (nth 6 statistics))
 			(terpri outFile))
-		      (writeArrayAndStatistics "1) ORIGINAL array:" elementsArray (getSortedGroupsInfo elementsArray))
-		      (shuffleArray elementsArray)
-		      (writeArrayAndStatistics "2) SHUFFLED array:" elementsArray (getSortedGroupsInfo elementsArray))
-		      (counterSort elementsArrayCopy)
-		      (writeArrayAndStatistics "3) COUNTER-SORTED array:" elementsArrayCopy (getSortedGroupsInfo elementsArrayCopy))
-		      (insertionSort elementsArray)
-		      (writeArrayAndStatistics "4) SORTED array:" elementsArray (getSortedGroupsInfo elementsArray))
+		      (write-array-and-statistics "1) ORIGINAL array:" elementsArray (get-sorted-groups-info elementsArray))
+		      (shuffle-array elementsArray)
+		      (write-array-and-statistics "2) SHUFFLED array:" elementsArray (get-sorted-groups-info elementsArray))
+		      (counter-sort elementsArrayCopy)
+		      (write-array-and-statistics "3) COUNTER-SORTED array:" elementsArrayCopy (get-sorted-groups-info elementsArrayCopy))
+		      (insertion-sort elementsArray)
+		      (write-array-and-statistics "4) SORTED array:" elementsArray (get-sorted-groups-info elementsArray))
 		      (write-line "The array has been successfully processed")
 		      (format t "Check output file ~s to see the result~%" +outputFile+)))))
 
