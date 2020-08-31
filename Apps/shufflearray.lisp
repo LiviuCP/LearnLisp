@@ -2,17 +2,17 @@
 (load "../Libs/parse.lisp")
 
 ; enter array values in input file, check output in output file (modify paths if required)
-(defconstant inputFile "/tmp/shufflearrayinput.txt")
-(defconstant outputFile "/tmp/shufflearrayoutput.txt")
+(defconstant +inputFile+ "/tmp/shufflearrayinput.txt")
+(defconstant +outputFile+ "/tmp/shufflearrayoutput.txt")
 
 (defun main()
   ; open the files just to check they are there, create if not existing
-  (open inputFile :direction :probe :if-does-not-exist :create)
-  (open outputFile :direction :probe :if-does-not-exist :create)
+  (open +inputFile+ :direction :probe :if-does-not-exist :create)
+  (open +outputFile+ :direction :probe :if-does-not-exist :create)
   ; read the array elements, parse them and build the array
   (let ((elementsArray) (elementsArrayCopy) (success))
     (let ((line) (elements (list)))
-      (with-open-file (inFile inputFile :direction :input)
+      (with-open-file (inFile +inputFile+ :direction :input)
 		      (setq line (read-line inFile)))
       (if (= (length line) 0)
 	  (write-line "There are no elements in the input file!")
@@ -44,7 +44,7 @@
       (setq elementsArrayCopy (make-array (length elementsArray)))
       (dotimes (index (length elementsArray)) ; make an array copy in order to use two different shuffling techniques on the original array sequence (each technique is destructive)
 	(setf (aref elementsArrayCopy index) (aref elementsArray index)))
-      (with-open-file (outFile outputFile :direction :output)
+      (with-open-file (outFile +outputFile+ :direction :output)
 		      (defun writeArrayAndStatistics(message outputArray statistics) ; use this function to write array shuffling statistics in a nicely formatted manner
 			(format outFile message)
 			(terpri outFile)
@@ -69,6 +69,6 @@
 		      (insertionSort elementsArray)
 		      (writeArrayAndStatistics "4) SORTED array:" elementsArray (getSortedGroupsInfo elementsArray))
 		      (write-line "The array has been successfully processed")
-		      (format t "Check output file ~s to see the result~%" outputFile)))))
+		      (format t "Check output file ~s to see the result~%" +outputFile+)))))
 
 (main)

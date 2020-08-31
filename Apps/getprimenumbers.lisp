@@ -1,8 +1,9 @@
 (load "../Libs/mathfunctions.lisp")
 (load "../Libs/inputoutput.lisp")
 
+(defconstant +outputFile+ "/tmp/primes.txt")
+
 (defun main()
-  (defconstant outputFile "/tmp/primes.txt")
   (let ((left) (right))
     (setq left (requestIntInputWithCondition "Enter the left interval margin: " #'(lambda(val)(let ((isGreater)) (setq isGreater (> val 1)))) "The number should be greater than 1. Please try again"))
     (unless (null left)
@@ -13,18 +14,18 @@
 	       (terpri)
 	       (princ "Retrieving prime numbers from interval: ")
 	       (cond ((< left right) (format t "[~d; ~d]~%~%" left right) (setq primes (getPrimeNumbers right left)))
-		     (t (format t "[~d; ~d]~%~%" firstRelevantPrime right) (setq primes (getPrimeNumbers left)))) ; //equal margins, only one threshold, display prime numbers starting with 2
+		     (t (format t "[~d; ~d]~%~%" +firstRelevantPrime+ right) (setq primes (getPrimeNumbers left)))) ; //equal margins, only one threshold, display prime numbers starting with 2
 	       (princ "Done!")
 	       (terpri)
 	       (terpri)
 	       (if (= (length primes) 0)
 		   (write-line "There are no prime numbers within this interval!")
 		 (progn
-		   (with-open-file (stream outputFile :direction :output)
+		   (with-open-file (stream +outputFile+ :direction :output)
 				   (format stream "Found following prime numbers in interval [~d; ~d]: ~%~%" left right)
 				   (dotimes (index (length primes))
 				     (format stream "Position: ~d~t~t~t~tValue: ~d~%" (+ index 1) (aref primes index)))
 				   (format t "~d numbers found~%~%" (length primes))
-				   (format t "Please check output file ~d~%" outputFile)))))))))
+				   (format t "Please check output file ~d~%" +outputFile+)))))))))
 
 (main)
