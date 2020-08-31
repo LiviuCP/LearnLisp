@@ -16,7 +16,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
   (let ((keyOrderRequired (not reverseKey)))
     (dotimes (index (- (length inputArray) 1))
       (when (or (and keyOrderRequired (not (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1))))) (and (not keyOrderRequired) (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1)))))
-	(swapArrayItems inputArray index (+ index 1)))
+	(swap-array-items inputArray index (+ index 1)))
       (setq keyOrderRequired (not keyOrderRequired))))) ; change ordering type for each step (according to key (e.g. increasing) / reverse to key (e.g. decreasing))
 
 (defun shuffle-array(inputArray)
@@ -31,7 +31,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	    do (let ((randomIndex (random leftIntervalEnd)))
 		 (cond ((null (aref vacancies randomIndex))
 			(setf (aref vacancies randomIndex) t)
-			(swapArrayItems inputArray index randomIndex))
+			(swap-array-items inputArray index randomIndex))
 		       (t
 			(setq duplicates (cons index duplicates)))))) ; if randomly chosen element from left had already been swapped: put the element from the right side into a separate list (reverse order)
       (let ((currentVacancyIndex 0))
@@ -39,7 +39,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	(dolist (element duplicates)
 	  (loop
 	   (when (null (aref vacancies currentVacancyIndex))
-	     (swapArrayItems inputArray currentVacancyIndex element)
+	     (swap-array-items inputArray currentVacancyIndex element)
 	     (setf (aref vacancies currentVacancyIndex) t) ; not really needed by "better safe than sorry"
 	     (incf currentVacancyIndex 1)
 	     (return))
@@ -47,7 +47,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
       ; finally swap elements pairwise to ensure a better mix (controversial, to be checked further)
       (do ((index 0 (incf index 2)))
 	  ((>= index (- (length inputArray) 1)))
-	  (swapArrayItems inputArray index (+ index 1))))))
+	  (swap-array-items inputArray index (+ index 1))))))
 
 (defun bubble-sort(inputArray &key sortKey left right)
   "This function implements the simplest (brute-force) algorithm: bubble sort."
@@ -76,7 +76,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	 (loop for index from left to (- right 2)
 	       do
 	       (unless (funcall sortKey (aref inputArray index) (aref inputArray (+ index 1)))
-		 (swapArrayItems inputArray index (+ index 1))
+		 (swap-array-items inputArray index (+ index 1))
 		 (setq sortingPerformed t)))
 	 (unless sortingPerformed ; stop when no item swap performed along the iteration
 	   (return)))))))
@@ -112,7 +112,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 		   (when (< checkedIndex 0)
 		     (return))
 		   (cond ((not (funcall sortKey (aref sequenceToSort checkedIndex) (aref sequenceToSort elementToInsert)))
-			  (swapArrayItems sequenceToSort checkedIndex elementToInsert)
+			  (swap-array-items sequenceToSort checkedIndex elementToInsert)
 			  (setq elementToInsert checkedIndex))
 			 (t (return)))
 		   (decf checkedIndex 1)))))))))
@@ -178,7 +178,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
     (when (/= beginIndex endIndex)
       (if (= beginIndex (- endIndex 1))
 	  (unless (funcall sortKey (aref inputArray beginIndex) (aref inputArray endIndex))
-	    (swapArrayItems inputArray beginIndex endIndex))
+	    (swap-array-items inputArray beginIndex endIndex))
 	(progn
 	  (let ((pivot (aref inputArray beginIndex)) (leftIndex (+ beginIndex 1)) (rightIndex endIndex))
 	    (loop
@@ -193,10 +193,10 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 		(return))
 	      (decf rightIndex 1))
 	     (if (< leftIndex rightIndex)
-		 (swapArrayItems inputArray leftIndex rightIndex)
+		 (swap-array-items inputArray leftIndex rightIndex)
 	       (return)))
 	    (when (> rightIndex beginIndex)
-	      (swapArrayItems inputArray beginIndex rightIndex)
+	      (swap-array-items inputArray beginIndex rightIndex)
 	      (do-quick-sort inputArray beginIndex (- rightIndex 1) sortKey))
 	    (when (< rightIndex endIndex)
 	      (do-quick-sort inputArray (+ rightIndex 1) endIndex sortKey)))))))
@@ -236,7 +236,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	 (let ((parentElementIndex (floor (- checkedElementIndex 1) 2)))
 	   (if (not (funcall sortKey (aref inputArray checkedElementIndex) (aref inputArray parentElementIndex)))
 	       (progn
-		 (swapArrayItems inputArray parentElementIndex checkedElementIndex)
+		 (swap-array-items inputArray parentElementIndex checkedElementIndex)
 		 (setq checkedElementIndex parentElementIndex))
 	     (return)))))))
   (check-type inputArray array)
@@ -266,7 +266,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 	    (loop
 	     (when (<= currentToSortIndex 0)
 	       (return))
-	     (swapArrayItems sequenceToSort 0 currentToSortIndex)
+	     (swap-array-items sequenceToSort 0 currentToSortIndex)
 	     (decf currentToSortIndex 1)
 	     (let ((checkedElementIndex 0))
 	       (loop
@@ -278,12 +278,12 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
 			   (unless (funcall sortKey (aref sequenceToSort rightChildIndex) (aref sequenceToSort leftChildIndex))
 			     (setq toSwapIndex rightChildIndex))
 			   (cond ((not (funcall sortKey (aref sequenceToSort toSwapIndex) (aref sequenceToSort checkedElementIndex)))
-				  (swapArrayItems sequenceToSort checkedElementIndex toSwapIndex)
+				  (swap-array-items sequenceToSort checkedElementIndex toSwapIndex)
 				  (setq checkedElementIndex toSwapIndex))
 				 (t (return)))))
 			((= leftChildIndex currentToSortIndex)
 			 (unless (funcall sortKey (aref sequenceToSort leftChildIndex) (aref sequenceToSort checkedElementIndex))
-			   (swapArrayItems sequenceToSort checkedElementIndex leftChildIndex))
+			   (swap-array-items sequenceToSort checkedElementIndex leftChildIndex))
 			 (return))
 			(t (return)))))))))))))
 
@@ -309,7 +309,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
     (let ((sortingLength (- right left)))
       (when (> sortingLength 1)
 	(let* ((sequenceToSort (make-array `(,sortingLength) :displaced-to inputArray :displaced-index-offset left))
-	       (minMaxElements (getMinMaxArrayElement sequenceToSort))
+	       (minMaxElements (get-min-max-array-element sequenceToSort))
 	       (offset (- 0 (car minMaxElements))) ; used for retrieving the bucket number (all elements temporarily made positive for this)
 	       (rangeLength (+ (cadr minMaxElements) offset 1)) ; required for retrieving the bucket number (actual number of elements should be matched to the maximum distinct numbers within interval)
 	       (bucketFactor (ceiling (/ rangeLength sortingLength))) ; maximum number of distinct elements to be entered into a bucket
