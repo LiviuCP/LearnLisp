@@ -74,7 +74,7 @@
 	(testArrayCopy #(25 23 22 22 15 13 12 12 12 8 7 5 3 3 3 3 -2 -4 -8 -9 -9 -11 -11 -14 -15)))
     (shuffle-array testArray)
     (assert-false (equalp testArray testArrayCopy))
-    (insertion-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (insertion-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray testArrayCopy)))
 
   (let ((testArray #(0 -1 2 4 3 9 5 5 2 8 -7 -5 3 2 4 12 8 7 7 6 4 5 10 -2 -2))
@@ -100,7 +100,7 @@
     (assert-true (equalp testArray #(-7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
-    (bubble-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (bubble-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
@@ -108,7 +108,7 @@
     (assert-true (equalp testArray #(-1/2 -2/4 -2/7 1/4 1/3 4/5 9/8 9/8 5/3 5/2))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
-    (bubble-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (bubble-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5/2 5/3 9/8 9/8 4/5 1/3 1/4 -2/7 -2/4 -1/2))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
@@ -116,7 +116,7 @@
     (assert-true (equalp testArray #(-7.4 -2.5 -0.6 0.01 1.4 2.1 2.100 3.0 8.25 9.34))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
-    (bubble-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (bubble-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(9.34 8.25 3.0 2.100 2.1 1.4 0.01 -0.6 -2.5 -7.4))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
@@ -124,7 +124,7 @@
     (assert-true (equalp testArray #(-2.0 -2 -1 1/4 5/3 2.25 9/4 2.5 4 5))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
-    (bubble-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (bubble-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5 4 2.5 9/4 2.25 5/3 1/4 -1 -2 -2.0))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
@@ -140,15 +140,15 @@
     (assert-true (equalp testArray #(-2 10 -7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8 -2 10)))
-    (bubble-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
+    (bubble-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7 -2 10))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8)))
-    (bubble-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
+    (bubble-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8 -10 2)))
-    (bubble-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
+    (bubble-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7 -10 2))))
 
   ; corner cases
@@ -171,7 +171,7 @@
     (assert-true (equalp testArray #(-7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
-    (insertion-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (insertion-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
@@ -179,7 +179,7 @@
     (assert-true (equalp testArray #(-1/2 -2/4 -2/7 1/4 1/3 4/5 9/8 9/8 5/3 5/2))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
-    (insertion-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (insertion-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5/2 5/3 9/8 9/8 4/5 1/3 1/4 -2/7 -2/4 -1/2))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
@@ -187,7 +187,7 @@
     (assert-true (equalp testArray #(-7.4 -2.5 -0.6 0.01 1.4 2.1 2.100 3.0 8.25 9.34))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
-    (insertion-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (insertion-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(9.34 8.25 3.0 2.100 2.1 1.4 0.01 -0.6 -2.5 -7.4))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
@@ -195,7 +195,7 @@
     (assert-true (equalp testArray #(-2.0 -2 -1 1/4 5/3 2.25 9/4 2.5 4 5))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
-    (insertion-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (insertion-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5 4 2.5 9/4 2.25 5/3 1/4 -1 -2 -2.0))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
@@ -211,15 +211,15 @@
     (assert-true (equalp testArray #(-2 10 -7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8 -2 10)))
-    (insertion-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
+    (insertion-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7 -2 10))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8)))
-    (insertion-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
+    (insertion-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8 -10 2)))
-    (insertion-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
+    (insertion-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7 -10 2))))
 
   ; corner cases
@@ -242,7 +242,7 @@
     (assert-true (equalp testArray #(-7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
-    (merge-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (merge-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
@@ -250,7 +250,7 @@
     (assert-true (equalp testArray #(-1/2 -2/4 -2/7 1/4 1/3 4/5 9/8 9/8 5/3 5/2))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
-    (merge-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (merge-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5/2 5/3 9/8 9/8 4/5 1/3 1/4 -2/7 -2/4 -1/2))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
@@ -258,7 +258,7 @@
     (assert-true (equalp testArray #(-7.4 -2.5 -0.6 0.01 1.4 2.1 2.100 3.0 8.25 9.34))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
-    (merge-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (merge-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(9.34 8.25 3.0 2.100 2.1 1.4 0.01 -0.6 -2.5 -7.4))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
@@ -266,7 +266,7 @@
     (assert-true (equalp testArray #(-2.0 -2 -1 1/4 5/3 2.25 9/4 2.5 4 5))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
-    (merge-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (merge-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5 4 2.5 9/4 2.25 5/3 1/4 -1 -2 -2.0))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
@@ -282,15 +282,15 @@
     (assert-true (equalp testArray #(-2 10 -7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8 -2 10)))
-    (merge-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
+    (merge-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7 -2 10))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8)))
-    (merge-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
+    (merge-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8 -10 2)))
-    (merge-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
+    (merge-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7 -10 2))))
 
   ; corner cases
@@ -313,7 +313,7 @@
     (assert-true (equalp testArray #(-7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
-    (quick-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (quick-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
@@ -321,7 +321,7 @@
     (assert-true (equalp testArray #(-1/2 -2/4 -2/7 1/4 1/3 4/5 9/8 9/8 5/3 5/2))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
-    (quick-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (quick-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5/2 5/3 9/8 9/8 4/5 1/3 1/4 -2/7 -2/4 -1/2))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
@@ -329,7 +329,7 @@
     (assert-true (equalp testArray #(-7.4 -2.5 -0.6 0.01 1.4 2.1 2.100 3.0 8.25 9.34))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
-    (quick-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (quick-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(9.34 8.25 3.0 2.100 2.1 1.4 0.01 -0.6 -2.5 -7.4))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
@@ -337,7 +337,7 @@
     (assert-true (equalp testArray #(-2.0 -2 -1 1/4 5/3 2.25 9/4 2.5 4 5))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
-    (quick-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (quick-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5 4 2.5 9/4 2.25 5/3 1/4 -1 -2 -2.0))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
@@ -353,15 +353,15 @@
     (assert-true (equalp testArray #(-2 10 -7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8 -2 10)))
-    (quick-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
+    (quick-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7 -2 10))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8)))
-    (quick-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
+    (quick-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8 -10 2)))
-    (quick-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
+    (quick-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7 -10 2))))
 
   ; corner cases
@@ -384,7 +384,7 @@
     (assert-true (equalp testArray #(-7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
-    (heap-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (heap-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
@@ -392,7 +392,7 @@
     (assert-true (equalp testArray #(-1/2 -2/4 -2/7 1/4 1/3 4/5 9/8 9/8 5/3 5/2))))
 
   (let ((testArray #(1/4 -1/2 -2/4 5/3 5/2 -2/7 9/8 9/8 1/3 4/5)))
-    (heap-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (heap-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5/2 5/3 9/8 9/8 4/5 1/3 1/4 -2/7 -2/4 -1/2))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
@@ -400,7 +400,7 @@
     (assert-true (equalp testArray #(-7.4 -2.5 -0.6 0.01 1.4 2.1 2.100 3.0 8.25 9.34))))
 
   (let ((testArray #(2.1 1.4 -0.6 2.100 3.0 -2.5 9.34 -7.4 8.25 0.01)))
-    (heap-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (heap-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(9.34 8.25 3.0 2.100 2.1 1.4 0.01 -0.6 -2.5 -7.4))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
@@ -408,7 +408,7 @@
     (assert-true (equalp testArray #(-2.0 -2 -1 1/4 5/3 2.25 9/4 2.5 4 5))))
 
   (let ((testArray #(1/4 -2 -2.0 5/3 2.5 4 9/4 2.25 -1 5)))
-    (heap-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))))
+    (heap-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))))
     (assert-true (equalp testArray #(5 4 2.5 9/4 2.25 5/3 1/4 -1 -2 -2.0))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8)))
@@ -424,15 +424,15 @@
     (assert-true (equalp testArray #(-2 10 -7 -1 0 2 2 3 4 5 5 8))))
 
   (let ((testArray #(2 -1 3 0 4 2 5 5 -7 8 -2 10)))
-    (heap-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
+    (heap-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :right 10)
     (assert-true (equalp testArray #(8 5 5 4 3 2 2 0 -1 -7 -2 10))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8)))
-    (heap-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
+    (heap-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7))))
 
   (let ((testArray #(-2 10 2 -1 3 0 4 2 5 5 -7 8 -10 2)))
-    (heap-sort testArray :sortKey (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
+    (heap-sort testArray :sort-key (lambda(a b)(let ((result))(setq result (>= a b)))) :left 2 :right 12)
     (assert-true (equalp testArray #(-2 10 8 5 5 4 3 2 2 0 -1 -7 -10 2))))
 
   ; corner cases
