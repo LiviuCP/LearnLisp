@@ -1,6 +1,6 @@
 (load "../Libs/inputoutput.lisp")
 
-(defun requestContainerParams()
+(defun request-container-params()
   (let ((result))
     (princ "Enter the container name (press ENTER to stop input): ")
     (let ((container-name) (container-capacity))
@@ -9,7 +9,7 @@
 	(setq container-capacity (request-integer-input-with-condition "Enter the container capacity (press ENTER to stop input): " #'(lambda(val)(setq is-greater (> val 0))) "The number should be strictly positive. Please try again"))
 	(if (not (null container-capacity))
 	    (setq result (list container-name container-capacity)))))
-    (return-from requestContainerParams result)))
+    (return-from request-container-params result)))
 
 (defun main()
   (write-line "In this exercise you need to fill in a water tank of a specific capacity by using multiple containers of different capacities")
@@ -22,7 +22,7 @@
 	(write-line "You quit!")
       (let ((containers-hash (make-hash-table :test #'equal))) ; this table is required for avoiding duplicate container names. If the user enters a container with same name the value from previous container is overwritten
 	(loop
-	 (let ((params (requestContainerParams)))
+	 (let ((params (request-container-params)))
 	   (if (null params)
 	       (return)
 	     (setf (gethash (car params) containers-hash) (cadr params)))))
