@@ -1,6 +1,6 @@
 (load "../Libs/mathfunctions.lisp")
 
-(define-test test-greatest-common-div
+(define-test test-greatest-common-divisor
   (assert-equal (greatest-common-divisor 6 10) 2)
   (assert-equal (greatest-common-divisor -10 -6) 2)
   (assert-equal (greatest-common-divisor 20 8) 4)
@@ -12,7 +12,7 @@
   (assert-equal (greatest-common-divisor -30 15) 15)
 )
 
-(define-test test-greatest-common-div-prime-factors
+(define-test test-greatest-common-divisor-prime-factors
   (assert-equal (greatest-common-divisor-prime-factors 6 10) 2)
   (assert-equal (greatest-common-divisor-prime-factors -10 -6) 2)
   (assert-equal (greatest-common-divisor-prime-factors 20 8) 4)
@@ -29,7 +29,7 @@
   (assert-equal (greatest-common-divisor-prime-factors 7 -7) 7)
 )
 
-(define-test test-least-common-mul-prime-factors
+(define-test test-least-common-multiple-prime-factors
   (assert-equal (least-common-multiple-prime-factors 6 10) 30)
   (assert-equal (least-common-multiple-prime-factors -10 -6) 30)
   (assert-equal (least-common-multiple-prime-factors 20 -8) 40)
@@ -64,17 +64,17 @@
   (assert-false (get-prime-factors-for-number 2))
   (assert-false (get-prime-factors-for-number 7))
 
-  (let ((primeFactors (get-prime-factors-for-number 6)))
-    (assert-true (= (gethash 2 primeFactors) 1)) ; assert-equal doesn't seem to work in these cases
-    (assert-true (= (gethash 3 primeFactors) 1)))
+  (let ((prime-factors (get-prime-factors-for-number 6)))
+    (assert-true (= (gethash 2 prime-factors) 1)) ; assert-equal doesn't seem to work in these cases
+    (assert-true (= (gethash 3 prime-factors) 1)))
 
-  (let ((primeFactors (get-prime-factors-for-number 384)))
-    (assert-true (= (gethash 2 primeFactors) 7))
-    (assert-true (= (gethash 3 primeFactors) 1)))
+  (let ((prime-factors (get-prime-factors-for-number 384)))
+    (assert-true (= (gethash 2 prime-factors) 7))
+    (assert-true (= (gethash 3 prime-factors) 1)))
 
-  (let ((primeFactors (get-prime-factors-for-number 2500)))
-    (assert-true (= (gethash 2 primeFactors) 2))
-    (assert-true (= (gethash 5 primeFactors) 4)))
+  (let ((prime-factors (get-prime-factors-for-number 2500)))
+    (assert-true (= (gethash 2 prime-factors) 2))
+    (assert-true (= (gethash 5 prime-factors) 4)))
 )
 
 (define-test test-fibonacci-matrix
