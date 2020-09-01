@@ -1,6 +1,6 @@
 (load "../Libs/parse.lisp")
 
-(defconstant +epsilon1+ (expt 10 -6)) ; used for integer or decimal arguments
+(defconstant +epsilon-1+ (expt 10 -6)) ; used for integer or decimal arguments
 
 (define-test test-convert-to-integer
   (assert-true (= (convert-string-to-integer "0") 0))
@@ -26,21 +26,21 @@
 )
 
 (define-test test-convert-to-float
-  (assert-true (<= (abs (- 2.345678000001 (convert-string-to-float "2.345678000001"))) +epsilon1+))
-  (assert-true (<= (abs (- -1.8954 (convert-string-to-float "-1.8954"))) +epsilon1+))
-  (assert-true (<= (abs (- 12.0 (convert-string-to-float "12"))) +epsilon1+))
-  (assert-true (<= (abs (- -4.0 (convert-string-to-float "-4"))) +epsilon1+))
-  (assert-true (<= (abs (- 0.0 (convert-string-to-float "0"))) +epsilon1+))
-  (assert-true (<= (abs (- 0.0 (convert-string-to-float "0.0"))) +epsilon1+))
-  (assert-true (<= (abs (- 0.0 (convert-string-to-float "-0"))) +epsilon1+))
-  (assert-true (<= (abs (- 0.0 (convert-string-to-float "-0.00"))) +epsilon1+))
-  (assert-true (<= (abs (- 11.0 (convert-string-to-float "11.000"))) +epsilon1+))
-  (assert-true (<= (abs (- 1.2354 (convert-string-to-float "01.2354"))) +epsilon1+))
-  (assert-true (<= (abs (- -2.4501 (convert-string-to-float "-02.450100"))) +epsilon1+))
-  (assert-true (<= (abs (- 4.0 (convert-string-to-float "8/2"))) +epsilon1+))
-  (assert-true (<= (abs (- -5.0 (convert-string-to-float "10/-2"))) +epsilon1+))
-  (assert-true (<= (abs (- -3.0 (convert-string-to-float "-9/3"))) +epsilon1+))
-  (assert-true (<= (abs (- 7.0 (convert-string-to-float "-49/-7"))) +epsilon1+))
+  (assert-true (<= (abs (- 2.345678000001 (convert-string-to-float "2.345678000001"))) +epsilon-1+))
+  (assert-true (<= (abs (- -1.8954 (convert-string-to-float "-1.8954"))) +epsilon-1+))
+  (assert-true (<= (abs (- 12.0 (convert-string-to-float "12"))) +epsilon-1+))
+  (assert-true (<= (abs (- -4.0 (convert-string-to-float "-4"))) +epsilon-1+))
+  (assert-true (<= (abs (- 0.0 (convert-string-to-float "0"))) +epsilon-1+))
+  (assert-true (<= (abs (- 0.0 (convert-string-to-float "0.0"))) +epsilon-1+))
+  (assert-true (<= (abs (- 0.0 (convert-string-to-float "-0"))) +epsilon-1+))
+  (assert-true (<= (abs (- 0.0 (convert-string-to-float "-0.00"))) +epsilon-1+))
+  (assert-true (<= (abs (- 11.0 (convert-string-to-float "11.000"))) +epsilon-1+))
+  (assert-true (<= (abs (- 1.2354 (convert-string-to-float "01.2354"))) +epsilon-1+))
+  (assert-true (<= (abs (- -2.4501 (convert-string-to-float "-02.450100"))) +epsilon-1+))
+  (assert-true (<= (abs (- 4.0 (convert-string-to-float "8/2"))) +epsilon-1+))
+  (assert-true (<= (abs (- -5.0 (convert-string-to-float "10/-2"))) +epsilon-1+))
+  (assert-true (<= (abs (- -3.0 (convert-string-to-float "-9/3"))) +epsilon-1+))
+  (assert-true (<= (abs (- 7.0 (convert-string-to-float "-49/-7"))) +epsilon-1+))
   (assert-true (= 2/5 (convert-string-to-float "2/5")))
   (assert-true (= -1/3 (convert-string-to-float "1/-3")))
   (assert-true (= -2/3 (convert-string-to-float "-2/3")))
