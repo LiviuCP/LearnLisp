@@ -1,4 +1,4 @@
-(defconstant +firstRelevantPrime+ 2 "First useful prime number (1 is not relevant).")
+(defconstant +first-relevant-prime+ 2 "First useful prime number (1 is not relevant).")
 
 (defun greatest-common-divisor (first second)
   "This function retrieves the greatest common divisor of two integer numbers by using the remainder method."
