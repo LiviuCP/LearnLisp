@@ -309,7 +309,7 @@ All sorting algorithms have the possibility to do sub-sequence sorting in arrays
     (let ((sorting-length (- right left)))
       (when (> sorting-length 1)
 	(let* ((sequence-to-sort (make-array `(,sorting-length) :displaced-to input-array :displaced-index-offset left))
-	       (min-max-elements (get-min-max-array-element sequence-to-sort))
+	       (min-max-elements (get-min-max-sequence-element sequence-to-sort))
 	       (offset (- 0 (car min-max-elements))) ; used for retrieving the bucket number (all elements temporarily made positive for this)
 	       (range-length (+ (cadr min-max-elements) offset 1)) ; required for retrieving the bucket number (actual number of elements should be matched to the maximum distinct numbers within interval)
 	       (bucket-factor (ceiling (/ range-length sorting-length))) ; maximum number of distinct elements to be entered into a bucket
