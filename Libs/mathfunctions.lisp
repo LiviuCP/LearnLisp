@@ -135,6 +135,46 @@
 	(setq identified-primes-final (make-array `(,final-number-of-elements) :displaced-to identified-primes :displaced-index-offset left-index))))
     (return-from get-prime-numbers identified-primes-final)))
 
+(defun get-prime-numbers-eratostene(right &optional left) ; the search interval has only one mandatory defined margin, namely the right one (left is optional, if not defined than it is presumed 2 - first relevant prime nr)
+  "This function retrieves prime numbers in a specific interval (default is [2; right]) by using the algorithm or Eratostene."
+  (check-type right integer)
+  (assert (> right 1) (right) "The given threshold is invalid")
+  (unless (null left)
+    (check-type left integer)
+    (assert (and (> left 1) (> right left)) (left right) "The given interval is invalid"))
+  (let* ((initial-primes-array-capacity (+ (floor right 10) 1)) ; initial allocation of 10% of all numbers belonging to interval (adjust if required), min 1 element required
+	 (identified-primes (make-array `(,initial-primes-array-capacity) :fill-pointer 0 :adjustable t))
+	 (identified-primes-final)
+	 (checked-array-size (+ right 1)) ; include 0 in the array of checked numbers to avoid unnecessary arithmetic operations index conversion into number (index = number)
+	 (all-checked-numbers (make-array `(,checked-array-size) :adjustable t :initial-element t)) ; all checked numbers initially considered prime (value t)
+	 (check-threshold (sqrt right)) ; all numbers until this threshold are checked for prime-ness and the found prime numbers are used for ruling out multiples from interval
+	 (current-found-prime 1)) ; mark 1 as "special number" (actually neither considered prime nor "not prime" -> this is the starting point for checking the range of numbers for prime-ness)
+    ; step 1: find all prime numbers until threshold and mark all multiples as non-prime
+    (loop
+     (do ((current-number-to-check (+ current-found-prime 1) (+ current-number-to-check 1)))
+	 ((not (null (aref all-checked-numbers current-number-to-check)))(setq current-found-prime current-number-to-check)))
+     (vector-push-extend current-found-prime identified-primes)
+     (if (> current-found-prime check-threshold)
+	 (return)
+       (do ((multiplication-factor 2 (+ multiplication-factor 1))) ; multiples of 2, 3, ... of the found prime to be marked as not prime (nil) in the checked numbers array
+	   ((> (* multiplication-factor current-found-prime) right))
+	   (setf (aref all-checked-numbers (* multiplication-factor current-found-prime)) nil))))
+    ; step 2 : go beyond threshold, gather all numbers that are still marked as prime and consolidate them with the already found primes
+    (do ((current-number-to-check (+ current-found-prime 1) (+ current-number-to-check 1)))
+	((> current-number-to-check right))
+	(unless (null (aref all-checked-numbers current-number-to-check))
+	  (vector-push-extend current-number-to-check identified-primes)))
+    ; step 3 : clip the left part of the interval if required
+    (let ((left-index 0))
+      (unless (null left)
+	(dotimes (index (fill-pointer identified-primes))
+	  (if (< (aref identified-primes index) left)
+	      (incf left-index 1)
+	    (return))))
+      (let ((final-number-of-elements (- (fill-pointer identified-primes) left-index)))
+	(setq identified-primes-final (make-array `(,final-number-of-elements) :displaced-to identified-primes :displaced-index-offset left-index))))
+    (return-from get-prime-numbers-eratostene identified-primes-final)))
+
 (defun get-fibonacci-matrix(order &optional initial-values) ; initial-values should be a list of four integer elements that are (in this order): (0, 0), (0, 1), (1, 0), (1, 1)
   "This function calculates a Fibonacci-like matrix; on each row, column and diagonal each number is the sum of the previous two numbers (initial numbers can be provided by user)."
   (check-type order integer)

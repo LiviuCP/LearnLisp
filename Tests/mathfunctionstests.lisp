@@ -59,6 +59,17 @@
   (assert-true (equalp (get-prime-numbers 20 11) #(11 13 17 19)))
 )
 
+(define-test test-prime-numbers-in-interval-eratostene
+  (assert-true (equalp (get-prime-numbers-eratostene 2) #(2)))
+  (assert-true (equalp (get-prime-numbers-eratostene 10) #(2 3 5 7)))
+  (assert-true (equalp (get-prime-numbers-eratostene 20 2) #(2 3 5 7 11 13 17 19)))
+  (assert-true (equalp (get-prime-numbers-eratostene 16 14) #()))
+  (assert-true (equalp (get-prime-numbers-eratostene 50 20) #(23 29 31 37 41 43 47)))
+  (assert-true (equalp (get-prime-numbers-eratostene 17 3) #(3 5 7 11 13 17)))
+  (assert-true (equalp (get-prime-numbers-eratostene 17) #(2 3 5 7 11 13 17)))
+  (assert-true (equalp (get-prime-numbers-eratostene 20 11) #(11 13 17 19)))
+)
+
 (define-test test-prime-factors
   (assert-false (get-prime-factors-for-number 1))
   (assert-false (get-prime-factors-for-number 2))
