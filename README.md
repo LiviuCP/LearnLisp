@@ -4,7 +4,14 @@ This project contains various mini-apps and small libraries written in Lisp.
 
 It has been created for educational purposes only, i.e. as a measure of my progress in learning this language.
 
-Note: for running the tests you need to download the lisp-unit framework from https://github.com/OdonataResearchLLC/lisp-unit. The root directory of this repo should be pulled into the same parent directory as the LearnLisp project. Run the tests by executing exectests.lisp from the LearnLisp/Tests directory. For more information please read the documentation contained in the lisp-unit repo.
+Note: for running the tests the lisp-unit framework from https://github.com/OdonataResearchLLC/lisp-unit is required. This is implemented as submodule within the LearnLisp project. After cloning the repository please run:
+
+      git submodule init
+      git submodule update
+
+It is also recommended to run the last command each time a git pull is executed.
+
+You can run the tests by executing exectests.lisp from the LearnLisp/Tests directory. For more information regarding the unit testing framework please read the documentation contained in the lisp-unit repo (see above link).
 
 2. Project Contents
 

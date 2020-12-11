@@ -1,4 +1,4 @@
-(load "../../lisp-unit/lisp-unit.lisp")
+(load "../External/lisp-unit/lisp-unit.lisp")
 (in-package :lisp-unit)
 
 (load "parsertests.lisp")
