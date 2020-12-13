@@ -6,7 +6,7 @@
     (let ((container-name) (container-capacity))
       (setq container-name (read-line))
       (when (> (length container-name) 0)
-	(setq container-capacity (request-integer-input-with-condition "Enter the container capacity (press ENTER to stop input): " #'(lambda(val)(setq is-greater (> val 0))) "The number should be strictly positive. Please try again"))
+	(setq container-capacity (request-integer-input-with-condition "Enter the container capacity (press ENTER to stop input): " #'(lambda(val)(let ((is-greater)) (setq is-greater (> val 0)))) "The number should be strictly positive. Please try again"))
 	(if (not (null container-capacity))
 	    (setq result (list container-name container-capacity)))))
     (return-from request-container-params result)))
